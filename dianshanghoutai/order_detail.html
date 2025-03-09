@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单详情 - 电商管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+        .sidebar {
+            background-color: #001529;
+            color: rgba(255, 255, 255, 0.65);
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .sidebar .logo {
+            height: 64px;
+            padding: 16px 24px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .sidebar .menu-item:hover {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .status-badge {
+            display: inline-block;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .status-paid {
+            background-color: #d9f7be;
+            color: #52c41a;
+        }
+        .status-shipped {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+        .status-delivered {
+            background-color: #f9f0ff;
+            color: #722ed1;
+        }
+        .status-refund {
+            background-color: #fff2e8;
+            color: #fa541c;
+        }
+        .status-pending {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        .product-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e6f7ff;
+            color: #1890ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        .step-circle.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .step-circle.completed {
+            background-color: #52c41a;
+            color: white;
+        }
+        .step-text {
+            font-size: 14px;
+            text-align: center;
+            max-width: 100px;
+        }
+        .step-line {
+            height: 2px;
+            background-color: #e8e8e8;
+            position: absolute;
+            top: 15px;
+            right: 50%;
+            left: -50%;
+            z-index: 0;
+        }
+        .step-line.active {
+            background-color: #1890ff;
+        }
+        .step-line.completed {
+            background-color: #52c41a;
+        }
+        .step-item:first-child .step-line {
+            display: none;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        .timeline-item:before {
+            content: "";
+            position: absolute;
+            left: -1.5rem;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background-color: #1890ff;
+        }
+        .timeline-item:after {
+            content: "";
+            position: absolute;
+            left: -1rem;
+            top: 0.75rem;
+            width: 2px;
+            height: 100%;
+            background-color: #e6f7ff;
+        }
+        .timeline-item:last-child:after {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store mr-2"></i> 电商管理系统
+        </div>
+        <nav class="mt-4">
+            <div class="menu-item">
+                <i class="fas fa-tachometer-alt"></i> 首页仪表盘
+            </div>
+            <div class="menu-item active">
+                <i class="fas fa-shopping-cart"></i> 订单管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-box"></i> 商品管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-users"></i> 客户管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-bullhorn"></i> 营销活动
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-chart-bar"></i> 数据分析
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-cog"></i> 系统设置
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主要内容区 -->
+    <main class="content">
+        <!-- 顶部导航栏 -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">订单详情</h1>
+            <div class="flex items-center">
+                <div class="mr-4 relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">3</span>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                    <span class="text-gray-700">张经理</span>
+                    <i class="fas fa-chevron-down ml-2 text-gray-500 text-xs"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作按钮和导航 -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+                <a href="orders.html" class="text-blue-500 hover:text-blue-700 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> 返回订单列表
+                </a>
+                <span class="mx-2 text-gray-300">|</span>
+                <span class="text-gray-500">订单号: OD-20230518-82735</span>
+                <span class="ml-4 status-badge status-shipped">已发货</span>
+            </div>
+            <div class="flex space-x-2">
+                <button class="bg-white text-gray-700 px-4 py-2 rounded border hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-print mr-2"></i> 打印订单
+                </button>
+                <button class="bg-white text-gray-700 px-4 py-2 rounded border hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-envelope mr-2"></i> 联系买家
+                </button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center">
+                    <i class="fas fa-check mr-2"></i> 确认收货
+                </button>
+            </div>
+        </div>
+
+        <!-- 订单流程 -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-lg font-medium text-gray-800 mb-6">订单流程</h2>
+            <div class="flex justify-between relative mb-6">
+                <div class="step-item">
+                    <div class="step-circle completed">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="step-text">下单</div>
+                    <div class="step-line completed"></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle completed">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="step-text">付款</div>
+                    <div class="step-line completed"></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle completed">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="step-text">发货</div>
+                    <div class="step-line active"></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle active">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="step-text">配送中</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="step-text">已签收</div>
+                    <div class="step-line"></div>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="step-text">完成</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-6 gap-4 text-center text-sm text-gray-500">
+                <div>2023-05-18 10:15</div>
+                <div>2023-05-18 10:20</div>
+                <div>2023-05-18 14:30</div>
+                <div>预计 2-3 天送达</div>
+                <div>-</div>
+                <div>-</div>
+            </div>
+        </div>
+
+        <!-- 订单基本信息和客户信息 -->
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <!-- 订单基本信息 -->
+            <div class="card p-6">
+                <h2 class="text-lg font-medium text-gray-800 mb-4">订单信息</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-gray-500 text-sm">订单编号</div>
+                        <div>OD-20230518-82735</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 text-sm">下单时间</div>
+                        <div>2023-05-18 10:15:32</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 text-sm">支付方式</div>
+                        <div>支付宝</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 text-sm">支付时间</div>
+                        <div>2023-05-18 10:20:45</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 text-sm">支付流水号</div>
+                        <div>T20230518102045789</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 text-sm">发货时间</div>
+                        <div>2023-05-18 14:30:12</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 text-sm">订单来源</div>
+                        <div>移动端</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 text-sm">交易单号</div>
+                        <div>TR20230518082735</div>
+                    </div>
+                    <div class="col-span-2">
+                        <div class="text-gray-500 text-sm">备注</div>
+                        <div>请快速发货，工作日白天不在家，请与我电话联系。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 客户信息 -->
+            <div class="card p-6">
+                <h2 class="text-lg font-medium text-gray-800 mb-4">客户信息</h2>
+                <div class="flex items-start mb-4">
+                    <img src="https://randomuser.me/api/portraits/men/72.jpg" alt="客户头像" class="w-16 h-16 rounded-full mr-4">
+                    <div>
+                        <div class="font-medium text-lg">刘志强</div>
+                        <div class="text-gray-500">
+                            <i class="fas fa-phone mr-1"></i> 138****5678
+                        </div>
+                        <div class="text-gray-500">
+                            <i class="fas fa-envelope mr-1"></i> liu***@example.com
+                        </div>
+                        <div class="text-gray-500 text-sm mt-2">会员等级: VIP客户</div>
+                    </div>
+                </div>
+                <div class="border-t pt-4 mt-4">
+                    <h3 class="font-medium mb-2">收货地址</h3>
+                    <div class="text-gray-700">
+                        <div>刘志强 138****5678</div>
+                        <div>上海市浦东新区张江高科技园区科苑路88号9号楼503室</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品信息 -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-lg font-medium text-gray-800 mb-4">商品信息</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-sm leading-normal">
+                            <th class="py-3 px-4 text-left">商品</th>
+                            <th class="py-3 px-4 text-left">规格</th>
+                            <th class="py-3 px-4 text-left">单价</th>
+                            <th class="py-3 px-4 text-left">数量</th>
+                            <th class="py-3 px-4 text-left">小计</th>
+                            <th class="py-3 px-4 text-left">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZHVjdHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60" alt="商品图片" class="product-image mr-3">
+                                    <div>
+                                        <div class="font-medium">无线蓝牙耳机</div>
+                                        <div class="text-gray-400">商品编号: PRD001238</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">黑色 / 标准版</td>
+                            <td class="py-3 px-4">¥499.00</td>
+                            <td class="py-3 px-4">1</td>
+                            <td class="py-3 px-4">¥499.00</td>
+                            <td class="py-3 px-4"><span class="status-badge status-shipped">已发货</span></td>
+                        </tr>
+                        <tr class="border-b border-gray-200">
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHByb2R1Y3R8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60" alt="商品图片" class="product-image mr-3">
+                                    <div>
+                                        <div class="font-medium">儿童益智拼图</div>
+                                        <div class="text-gray-400">商品编号: PRD007124</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">100片 / 动物世界</td>
+                            <td class="py-3 px-4">¥79.00</td>
+                            <td class="py-3 px-4">2</td>
+                            <td class="py-3 px-4">¥158.00</td>
+                            <td class="py-3 px-4"><span class="status-badge status-shipped">已发货</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex justify-end mt-6">
+                <div class="w-1/3">
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-500">商品总价:</span>
+                        <span>¥657.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-500">运费:</span>
+                        <span>¥0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-500">优惠券:</span>
+                        <span class="text-red-500">-¥30.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm mb-2">
+                        <span class="text-gray-500">积分抵扣:</span>
+                        <span class="text-red-500">-¥10.00</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-bold border-t pt-2 mt-2">
+                        <span>实付款:</span>
+                        <span class="text-red-500">¥617.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 物流信息 -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-lg font-medium text-gray-800 mb-4">物流信息</h2>
+            <div class="flex mb-4">
+                <div class="w-1/3">
+                    <div class="text-gray-500 text-sm mb-1">物流公司</div>
+                    <div>顺丰速运</div>
+                </div>
+                <div class="w-1/3">
+                    <div class="text-gray-500 text-sm mb-1">物流单号</div>
+                    <div class="flex items-center">
+                        <span>SF1234567890123</span>
+                        <button class="ml-2 px-2 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100">复制</button>
+                    </div>
+                </div>
+                <div class="w-1/3">
+                    <div class="text-gray-500 text-sm mb-1">配送方式</div>
+                    <div>标准配送</div>
+                </div>
+            </div>
+            <div class="border-t pt-4">
+                <h3 class="font-medium mb-4">物流跟踪</h3>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="font-medium">2023-05-19 10:15:32</div>
+                        <div class="text-gray-500">运输中，预计明天送达</div>
+                        <div class="text-gray-400 text-sm">广州转运中心 - 已发出</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="font-medium">2023-05-19 08:23:17</div>
+                        <div class="text-gray-500">已到达广州转运中心</div>
+                        <div class="text-gray-400 text-sm">广州转运中心 - 已收入</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="font-medium">2023-05-18 21:34:45</div>
+                        <div class="text-gray-500">已发出</div>
+                        <div class="text-gray-400 text-sm">深圳转运中心 - 已发出</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="font-medium">2023-05-18 18:12:11</div>
+                        <div class="text-gray-500">已到达</div>
+                        <div class="text-gray-400 text-sm">深圳转运中心 - 已收入</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="font-medium">2023-05-18 14:30:12</div>
+                        <div class="text-gray-500">商家已发货</div>
+                        <div class="text-gray-400 text-sm">深圳 - 已揽件</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作记录 -->
+        <div class="card p-6">
+            <h2 class="text-lg font-medium text-gray-800 mb-4">操作记录</h2>
+            <table class="min-w-full">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-600 text-sm leading-normal">
+                        <th class="py-3 px-4 text-left">操作人</th>
+                        <th class="py-3 px-4 text-left">操作内容</th>
+                        <th class="py-3 px-4 text-left">操作时间</th>
+                        <th class="py-3 px-4 text-left">备注</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm">
+                    <tr class="border-b border-gray-200">
+                        <td class="py-3 px-4">系统</td>
+                        <td class="py-3 px-4">订单创建</td>
+                        <td class="py-3 px-4">2023-05-18 10:15:32</td>
+                        <td class="py-3 px-4">-</td>
+                    </tr>
+                    <tr class="border-b border-gray-200">
+                        <td class="py-3 px-4">系统</td>
+                        <td class="py-3 px-4">支付完成</td>
+                        <td class="py-3 px-4">2023-05-18 10:20:45</td>
+                        <td class="py-3 px-4">支付宝支付</td>
+                    </tr>
+                    <tr class="border-b border-gray-200">
+                        <td class="py-3 px-4">李静 (客服)</td>
+                        <td class="py-3 px-4">客户备注修改</td>
+                        <td class="py-3 px-4">2023-05-18 11:05:22</td>
+                        <td class="py-3 px-4">应客户要求添加备注：工作日白天不在家</td>
+                    </tr>
+                    <tr class="border-b border-gray-200">
+                        <td class="py-3 px-4">王明 (仓库)</td>
+                        <td class="py-3 px-4">订单发货</td>
+                        <td class="py-3 px-4">2023-05-18 14:30:12</td>
+                        <td class="py-3 px-4">顺丰速运 SF1234567890123</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html> 

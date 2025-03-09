@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车 - 拼多多类电商App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 购物车页面特定样式 */
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .cart-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .cart-edit {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .cart-container {
+            padding-bottom: 60px; /* 为底部结算栏留出空间 */
+        }
+        
+        .cart-item {
+            display: flex;
+            padding: 15px;
+            background-color: white;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .cart-checkbox {
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cart-checkbox input {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            -webkit-appearance: none;
+            border: 1px solid #ddd;
+            outline: none;
+            position: relative;
+        }
+        
+        .cart-checkbox input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .cart-checkbox input:checked:after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .cart-product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+        
+        .cart-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cart-product-info {
+            flex: 1;
+        }
+        
+        .cart-product-title {
+            font-size: 14px;
+            margin-bottom: 5px;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .cart-product-spec {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .cart-product-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .cart-product-price {
+            color: var(--price-color);
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .cart-quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .cart-quantity-button {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f5f5f5;
+            color: #666;
+            font-size: 14px;
+            user-select: none;
+        }
+        
+        .cart-quantity-input {
+            width: 40px;
+            height: 28px;
+            text-align: center;
+            border: none;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            font-size: 14px;
+        }
+        
+        .cart-shop-name {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .cart-shop-name i {
+            margin-right: 5px;
+            color: #666;
+        }
+        
+        .cart-shop-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .cart-shop-coupon {
+            margin-left: 10px;
+            background-color: #fff1e8;
+            color: var(--primary-color);
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .cart-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 0;
+            color: #999;
+        }
+        
+        .cart-empty i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        .cart-empty-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .cart-empty-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .cart-recommend {
+            margin-top: 20px;
+        }
+        
+        .cart-recommend-title {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 0 15px;
+            margin-bottom: 10px;
+        }
+        
+        .cart-recommend-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 0 15px;
+        }
+        
+        .cart-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+        
+        .cart-select-all {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .cart-total {
+            flex: 1;
+            text-align: right;
+            padding-right: 15px;
+        }
+        
+        .cart-total-price {
+            color: var(--price-color);
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .cart-total-desc {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .cart-checkout-button {
+            background-color: var(--button-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 购物车头部 -->
+    <div class="cart-header">
+        <div class="cart-title">购物车</div>
+        <div class="cart-edit">管理</div>
+    </div>
+    
+    <!-- 购物车内容 -->
+    <div class="cart-container">
+        <!-- 店铺1 -->
+        <div class="cart-shop-name">
+            <i class="fas fa-store"></i>
+            <span class="cart-shop-title">智能科技旗舰店</span>
+            <span class="cart-shop-coupon">满99减10</span>
+        </div>
+        
+        <div class="cart-item">
+            <div class="cart-checkbox">
+                <input type="checkbox" checked>
+            </div>
+            <div class="cart-product-image">
+                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="商品图片">
+            </div>
+            <div class="cart-product-info">
+                <div class="cart-product-title">智能手表 运动监测 心率检测 多功能通知 防水 长续航</div>
+                <div class="cart-product-spec">黑色 | 标准版</div>
+                <div class="cart-product-price-row">
+                    <div class="cart-product-price">¥89</div>
+                    <div class="cart-quantity-control">
+                        <div class="cart-quantity-button">-</div>
+                        <input type="text" class="cart-quantity-input" value="1">
+                        <div class="cart-quantity-button">+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 店铺2 -->
+        <div class="cart-shop-name">
+            <i class="fas fa-store"></i>
+            <span class="cart-shop-title">数码配件专营店</span>
+            <span class="cart-shop-coupon">满199减30</span>
+        </div>
+        
+        <div class="cart-item">
+            <div class="cart-checkbox">
+                <input type="checkbox" checked>
+            </div>
+            <div class="cart-product-image">
+                <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="商品图片">
+            </div>
+            <div class="cart-product-info">
+                <div class="cart-product-title">无线蓝牙耳机 降噪 长续航 舒适佩戴</div>
+                <div class="cart-product-spec">白色 | 标准版</div>
+                <div class="cart-product-price-row">
+                    <div class="cart-product-price">¥59</div>
+                    <div class="cart-quantity-control">
+                        <div class="cart-quantity-button">-</div>
+                        <input type="text" class="cart-quantity-input" value="2">
+                        <div class="cart-quantity-button">+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cart-item">
+            <div class="cart-checkbox">
+                <input type="checkbox" checked>
+            </div>
+            <div class="cart-product-image">
+                <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="商品图片">
+            </div>
+            <div class="cart-product-info">
+                <div class="cart-product-title">手机支架 桌面懒人支架 多角度调节</div>
+                <div class="cart-product-spec">黑色</div>
+                <div class="cart-product-price-row">
+                    <div class="cart-product-price">¥9.9</div>
+                    <div class="cart-quantity-control">
+                        <div class="cart-quantity-button">-</div>
+                        <input type="text" class="cart-quantity-input" value="1">
+                        <div class="cart-quantity-button">+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 猜你喜欢 -->
+        <div class="cart-recommend">
+            <div class="cart-recommend-title">猜你喜欢</div>
+            <div class="cart-recommend-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="商品">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">时尚太阳镜 偏光防紫外线 轻盈舒适</h3>
+                        <div>
+                            <span class="product-price">¥39</span>
+                            <span class="product-original-price">¥99</span>
+                        </div>
+                        <div class="product-sales">已售2.8万件</div>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="商品">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">保温杯 304不锈钢 大容量 便携水杯</h3>
+                        <div>
+                            <span class="product-price">¥29</span>
+                            <span class="product-original-price">¥69</span>
+                        </div>
+                        <div class="product-sales">已售8.5万件</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部结算栏 -->
+    <div class="cart-bottom-bar">
+        <div class="cart-select-all">
+            <div class="cart-checkbox" style="margin-right: 5px;">
+                <input type="checkbox" checked>
+            </div>
+            全选
+        </div>
+        <div class="cart-total">
+            <div>
+                合计: <span class="cart-total-price">¥216.9</span>
+            </div>
+            <div class="cart-total-desc">总额¥276.9 立减¥60</div>
+        </div>
+        <button class="cart-checkout-button">结算(4)</button>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <a href="#" class="tab-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-th-large"></i>
+            <span>分类</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-fire"></i>
+            <span>发现</span>
+        </a>
+        <a href="#" class="tab-item active">
+            <i class="fas fa-shopping-cart"></i>
+            <span>购物车</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+</html> 

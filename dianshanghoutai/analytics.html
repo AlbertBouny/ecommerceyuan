@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析 - 电商管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- 引入Chart.js用于图表展示 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+        .sidebar {
+            background-color: #001529;
+            color: rgba(255, 255, 255, 0.65);
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .sidebar .logo {
+            height: 64px;
+            padding: 16px 24px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .sidebar .menu-item:hover {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .tab-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-item.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+        }
+        .tab-item:hover:not(.active) {
+            color: #40a9ff;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .trend-up {
+            color: #52c41a;
+        }
+        .trend-down {
+            color: #f5222d;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store mr-2"></i> 电商管理系统
+        </div>
+        <nav class="mt-4">
+            <div class="menu-item">
+                <i class="fas fa-tachometer-alt"></i> 首页仪表盘
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-shopping-cart"></i> 订单管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-box"></i> 商品管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-users"></i> 客户管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-bullhorn"></i> 营销活动
+            </div>
+            <div class="menu-item active">
+                <i class="fas fa-chart-bar"></i> 数据分析
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-cog"></i> 系统设置
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主要内容区 -->
+    <main class="content">
+        <!-- 顶部导航栏 -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">数据分析</h1>
+            <div class="flex items-center">
+                <div class="mr-4 relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">3</span>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                    <span class="text-gray-700">张经理</span>
+                    <i class="fas fa-chevron-down ml-2 text-gray-500 text-xs"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据分析标签页 -->
+        <div class="card mb-6">
+            <div class="flex border-b">
+                <div class="tab-item active font-medium">销售概览</div>
+                <div class="tab-item font-medium">商品分析</div>
+                <div class="tab-item font-medium">客户分析</div>
+                <div class="tab-item font-medium">营销效果</div>
+                <div class="tab-item font-medium">渠道分析</div>
+            </div>
+        </div>
+
+        <!-- 日期筛选和数据导出 -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+                <span class="mr-2 text-gray-600">时间范围:</span>
+                <select class="border rounded px-3 py-2 focus:outline-none focus:border-blue-500 bg-white">
+                    <option value="today">今日</option>
+                    <option value="yesterday">昨日</option>
+                    <option value="week">本周</option>
+                    <option value="month" selected>本月</option>
+                    <option value="quarter">本季度</option>
+                    <option value="year">本年度</option>
+                    <option value="custom">自定义</option>
+                </select>
+                <div class="ml-4 flex items-center" id="customDateRange" style="display: none;">
+                    <input type="date" class="border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                    <span class="mx-2">至</span>
+                    <input type="date" class="border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <button class="bg-white text-gray-700 px-4 py-2 rounded border hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-sync-alt mr-2"></i> 刷新数据
+                </button>
+                <button class="bg-white text-gray-700 px-4 py-2 rounded border hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-file-export mr-2"></i> 导出报表
+                </button>
+            </div>
+        </div>
+
+        <!-- 销售概览核心指标 -->
+        <div class="grid grid-cols-4 gap-6 mb-6">
+            <div class="card p-4">
+                <div class="text-gray-500 mb-2">总销售额</div>
+                <div class="text-2xl font-bold text-gray-800">¥125,689.00</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up mr-1"></i> 16.8% 较上月
+                </div>
+            </div>
+            <div class="card p-4">
+                <div class="text-gray-500 mb-2">订单总数</div>
+                <div class="text-2xl font-bold text-blue-500">1,256</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up mr-1"></i> 12.3% 较上月
+                </div>
+            </div>
+            <div class="card p-4">
+                <div class="text-gray-500 mb-2">客单价</div>
+                <div class="text-2xl font-bold text-yellow-500">¥100.07</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up mr-1"></i> 4.2% 较上月
+                </div>
+            </div>
+            <div class="card p-4">
+                <div class="text-gray-500 mb-2">退款金额</div>
+                <div class="text-2xl font-bold text-red-500">¥2,345.00</div>
+                <div class="text-red-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up mr-1"></i> 2.5% 较上月
+                </div>
+            </div>
+        </div>
+
+        <!-- 销售趋势图表 -->
+        <div class="card p-4 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-medium text-gray-800">销售趋势</h2>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 text-sm rounded border border-gray-300 hover:bg-gray-50 bg-white">日</button>
+                    <button class="px-3 py-1 text-sm rounded border border-blue-500 bg-blue-500 text-white">周</button>
+                    <button class="px-3 py-1 text-sm rounded border border-gray-300 hover:bg-gray-50 bg-white">月</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="salesTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 热销商品和商品类别 -->
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <!-- 热销商品 -->
+            <div class="card p-4">
+                <h2 class="text-lg font-medium text-gray-800 mb-4">热销商品</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="bg-gray-50 text-gray-600 text-sm leading-normal">
+                                <th class="py-3 px-4 text-left">商品</th>
+                                <th class="py-3 px-4 text-left">销量</th>
+                                <th class="py-3 px-4 text-left">销售额</th>
+                                <th class="py-3 px-4 text-left">趋势</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-600 text-sm">
+                            <tr class="border-b border-gray-200">
+                                <td class="py-3 px-4">无线蓝牙耳机</td>
+                                <td class="py-3 px-4">352</td>
+                                <td class="py-3 px-4">¥175,648.00</td>
+                                <td class="py-3 px-4 trend-up"><i class="fas fa-arrow-up mr-1"></i> 12%</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-3 px-4">运动跑鞋</td>
+                                <td class="py-3 px-4">245</td>
+                                <td class="py-3 px-4">¥80,605.00</td>
+                                <td class="py-3 px-4 trend-up"><i class="fas fa-arrow-up mr-1"></i> 8%</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-3 px-4">防晒霜 SPF50</td>
+                                <td class="py-3 px-4">198</td>
+                                <td class="py-3 px-4">¥21,582.00</td>
+                                <td class="py-3 px-4 trend-down"><i class="fas fa-arrow-down mr-1"></i> 3%</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-3 px-4">智能手环</td>
+                                <td class="py-3 px-4">187</td>
+                                <td class="py-3 px-4">¥55,913.00</td>
+                                <td class="py-3 px-4 trend-up"><i class="fas fa-arrow-up mr-1"></i> 15%</td>
+                            </tr>
+                            <tr class="border-b border-gray-200">
+                                <td class="py-3 px-4">儿童益智拼图</td>
+                                <td class="py-3 px-4">156</td>
+                                <td class="py-3 px-4">¥12,324.00</td>
+                                <td class="py-3 px-4 trend-up"><i class="fas fa-arrow-up mr-1"></i> 5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 商品类别分布 -->
+            <div class="card p-4">
+                <h2 class="text-lg font-medium text-gray-800 mb-4">商品类别分布</h2>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户和订单分析 -->
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <!-- 客户地域分布 -->
+            <div class="card p-4">
+                <h2 class="text-lg font-medium text-gray-800 mb-4">客户地域分布</h2>
+                <div class="chart-container">
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 订单转化漏斗 -->
+            <div class="card p-4">
+                <h2 class="text-lg font-medium text-gray-800 mb-4">订单转化漏斗</h2>
+                <div class="chart-container">
+                    <canvas id="conversionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户满意度 -->
+        <div class="card p-4 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-medium text-gray-800">客户满意度</h2>
+                <select class="border rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500 bg-white">
+                    <option value="all">全部评价</option>
+                    <option value="positive">好评</option>
+                    <option value="neutral">中评</option>
+                    <option value="negative">差评</option>
+                </select>
+            </div>
+            <div class="flex justify-between items-center">
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-green-500 mb-2">4.6</div>
+                    <div class="text-gray-500">平均评分</div>
+                    <div class="flex items-center justify-center mt-2">
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star text-yellow-400"></i>
+                        <i class="fas fa-star-half-alt text-yellow-400"></i>
+                    </div>
+                </div>
+                <div class="w-1/2">
+                    <div class="flex items-center mb-2">
+                        <span class="w-10 text-gray-600">5星</span>
+                        <div class="flex-1 bg-gray-200 rounded h-2 mx-2">
+                            <div class="bg-green-500 h-2 rounded" style="width: 75%"></div>
+                        </div>
+                        <span class="w-10 text-right text-gray-600">75%</span>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <span class="w-10 text-gray-600">4星</span>
+                        <div class="flex-1 bg-gray-200 rounded h-2 mx-2">
+                            <div class="bg-green-500 h-2 rounded" style="width: 17%"></div>
+                        </div>
+                        <span class="w-10 text-right text-gray-600">17%</span>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <span class="w-10 text-gray-600">3星</span>
+                        <div class="flex-1 bg-gray-200 rounded h-2 mx-2">
+                            <div class="bg-yellow-500 h-2 rounded" style="width: 5%"></div>
+                        </div>
+                        <span class="w-10 text-right text-gray-600">5%</span>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <span class="w-10 text-gray-600">2星</span>
+                        <div class="flex-1 bg-gray-200 rounded h-2 mx-2">
+                            <div class="bg-orange-500 h-2 rounded" style="width: 2%"></div>
+                        </div>
+                        <span class="w-10 text-right text-gray-600">2%</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-10 text-gray-600">1星</span>
+                        <div class="flex-1 bg-gray-200 rounded h-2 mx-2">
+                            <div class="bg-red-500 h-2 rounded" style="width: 1%"></div>
+                        </div>
+                        <span class="w-10 text-right text-gray-600">1%</span>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-blue-500 mb-2">98.2%</div>
+                    <div class="text-gray-500">好评率</div>
+                    <div class="text-green-500 text-sm mt-2">
+                        <i class="fas fa-arrow-up mr-1"></i> 2.3% 较上月
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 图表脚本 -->
+    <script>
+        // 销售趋势图表
+        const salesTrendCtx = document.getElementById('salesTrendChart').getContext('2d');
+        const salesTrendChart = new Chart(salesTrendCtx, {
+            type: 'line',
+            data: {
+                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                datasets: [{
+                    label: '销售额',
+                    data: [15000, 21000, 18000, 24000, 23000, 28000, 20000],
+                    backgroundColor: 'rgba(24, 144, 255, 0.1)',
+                    borderColor: 'rgba(24, 144, 255, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // 商品类别分布图表
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        const categoryChart = new Chart(categoryCtx, {
+            type: 'pie',
+            data: {
+                labels: ['数码电子', '服装鞋包', '家居生活', '美妆个护', '食品饮料', '其他'],
+                datasets: [{
+                    data: [35, 25, 15, 12, 8, 5],
+                    backgroundColor: [
+                        'rgba(24, 144, 255, 0.7)',
+                        'rgba(82, 196, 26, 0.7)',
+                        'rgba(250, 173, 20, 0.7)',
+                        'rgba(245, 34, 45, 0.7)',
+                        'rgba(114, 46, 209, 0.7)',
+                        'rgba(153, 153, 153, 0.7)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+
+        // 客户地域分布图表
+        const regionCtx = document.getElementById('regionChart').getContext('2d');
+        const regionChart = new Chart(regionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['北京', '上海', '广东', '江苏', '浙江', '四川', '其他'],
+                datasets: [{
+                    label: '客户数量',
+                    data: [1200, 980, 850, 720, 650, 590, 1240],
+                    backgroundColor: 'rgba(24, 144, 255, 0.7)',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // 订单转化漏斗图表
+        const conversionCtx = document.getElementById('conversionChart').getContext('2d');
+        const conversionChart = new Chart(conversionCtx, {
+            type: 'bar',
+            data: {
+                labels: ['访问量', '加购物车', '下单', '付款', '完成'],
+                datasets: [{
+                    label: '数量',
+                    data: [5000, 3200, 2100, 1850, 1750],
+                    backgroundColor: [
+                        'rgba(24, 144, 255, 0.5)',
+                        'rgba(24, 144, 255, 0.6)',
+                        'rgba(24, 144, 255, 0.7)',
+                        'rgba(24, 144, 255, 0.8)',
+                        'rgba(24, 144, 255, 0.9)'
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

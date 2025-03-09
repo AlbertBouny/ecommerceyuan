@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品管理 - 电商商家管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fb;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            overflow: auto;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #000;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        
+        .status-bar-time {
+            font-weight: 500;
+        }
+        
+        .status-bar-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .page-header {
+            background-color: white;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 44px;
+            z-index: 30;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-top: 12px;
+        }
+        
+        .search-container i {
+            color: #999;
+            margin-right: 8px;
+        }
+        
+        .search-input {
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+        }
+        
+        .tab-filter {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            background-color: white;
+            padding: 0 12px;
+            position: sticky;
+            top: 124px;
+            z-index: 20;
+            scrollbar-width: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .tab-filter::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .filter-item {
+            padding: 12px 10px;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+        }
+        
+        .filter-item.active {
+            color: #1890ff;
+            font-weight: 500;
+        }
+        
+        .filter-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background-color: #1890ff;
+        }
+        
+        .filter-options {
+            display: flex;
+            padding: 12px 16px;
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        
+        .filter-options::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #666;
+            margin-right: 10px;
+        }
+        
+        .option-item i {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        
+        .product-count {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #999;
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .product-list {
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 150px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-stock {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .product-status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #1890ff;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .status-offline {
+            background: #999;
+        }
+        
+        .product-info {
+            padding: 10px;
+        }
+        
+        .product-title {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            height: 34px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .product-price {
+            color: #ff4d4f;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        
+        .price-original {
+            font-size: 12px;
+            color: #999;
+            text-decoration: line-through;
+            margin-left: 5px;
+            font-weight: normal;
+        }
+        
+        .product-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .floating-button {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #1890ff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 30;
+        }
+        
+        .floating-button i {
+            font-size: 20px;
+        }
+        
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: white;
+            display: flex;
+            border-top: 1px solid #f0f0f0;
+            z-index: 40;
+        }
+        
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 10px;
+        }
+        
+        .tab-item.active {
+            color: #1890ff;
+        }
+        
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        
+        .bottom-padding {
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">09:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 页面标题 -->
+    <div class="page-header">
+        <div class="header-top">
+            <h1 class="header-title">商品管理</h1>
+            <div class="header-actions">
+                <i class="fas fa-qrcode"></i>
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+        </div>
+        
+        <!-- 搜索框 -->
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="搜索商品名称/编号" class="search-input">
+        </div>
+    </div>
+    
+    <!-- 商品过滤器 -->
+    <div class="tab-filter">
+        <div class="filter-item active">全部</div>
+        <div class="filter-item">出售中</div>
+        <div class="filter-item">已下架</div>
+        <div class="filter-item">售罄</div>
+        <div class="filter-item">库存预警</div>
+    </div>
+    
+    <!-- 筛选选项 -->
+    <div class="filter-options">
+        <div class="option-item">
+            综合排序 <i class="fas fa-angle-down"></i>
+        </div>
+        <div class="option-item">
+            销量 <i class="fas fa-angle-down"></i>
+        </div>
+        <div class="option-item">
+            价格 <i class="fas fa-angle-down"></i>
+        </div>
+        <div class="option-item">
+            上架时间 <i class="fas fa-angle-down"></i>
+        </div>
+        <div class="option-item">
+            筛选 <i class="fas fa-filter"></i>
+        </div>
+    </div>
+    
+    <!-- 商品数量提示 -->
+    <div class="product-count">
+        共 126 件商品
+    </div>
+    
+    <!-- 商品列表 -->
+    <div class="product-list">
+        <!-- 商品1 -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                <div class="product-stock">库存 45</div>
+                <div class="product-status">出售中</div>
+            </div>
+            <div class="product-info">
+                <div class="product-title">Apple Watch SE 智能手表 运动款 40mm 星光色</div>
+                <div class="product-price">¥1,899.00 <span class="price-original">¥2,099.00</span></div>
+                <div class="product-stats">
+                    <div>销量: 158</div>
+                    <div>浏览: 2.3k</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商品2 -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1585155770447-2f66e2a397b5?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                <div class="product-stock">库存 23</div>
+                <div class="product-status">出售中</div>
+            </div>
+            <div class="product-info">
+                <div class="product-title">2023新款超薄笔记本电脑 14英寸 i5处理器 16G内存</div>
+                <div class="product-price">¥4,299.00 <span class="price-original">¥4,899.00</span></div>
+                <div class="product-stats">
+                    <div>销量: 89</div>
+                    <div>浏览: 1.5k</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商品3 -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                <div class="product-stock">库存 120</div>
+                <div class="product-status">出售中</div>
+            </div>
+            <div class="product-info">
+                <div class="product-title">无线蓝牙耳机 降噪长续航 黑色</div>
+                <div class="product-price">¥129.00 <span class="price-original">¥199.00</span></div>
+                <div class="product-stats">
+                    <div>销量: 426</div>
+                    <div>浏览: 5.8k</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商品4 -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                <div class="product-stock">库存 0</div>
+                <div class="product-status status-offline">已售罄</div>
+            </div>
+            <div class="product-info">
+                <div class="product-title">智能手环监测心率血压血氧 黑色</div>
+                <div class="product-price">¥169.00 <span class="price-original">¥199.00</span></div>
+                <div class="product-stats">
+                    <div>销量: 215</div>
+                    <div>浏览: 3.2k</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商品5 -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                <div class="product-stock">库存 56</div>
+                <div class="product-status">出售中</div>
+            </div>
+            <div class="product-info">
+                <div class="product-title">头戴式无线耳机 高解析音质 舒适长续航</div>
+                <div class="product-price">¥299.00 <span class="price-original">¥399.00</span></div>
+                <div class="product-stats">
+                    <div>销量: 183</div>
+                    <div>浏览: 2.7k</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商品6 -->
+        <div class="product-card">
+            <div class="product-image">
+                <img src="https://images.unsplash.com/photo-1491472253230-a044054ca35f?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                <div class="product-stock">库存 8</div>
+                <div class="product-status">出售中</div>
+            </div>
+            <div class="product-info">
+                <div class="product-title">便携式移动电源 20000mAh 双向快充</div>
+                <div class="product-price">¥199.00 <span class="price-original">¥249.00</span></div>
+                <div class="product-stats">
+                    <div>销量: 327</div>
+                    <div>浏览: 4.3k</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bottom-padding"></div>
+    </div>
+    
+    <!-- 悬浮添加按钮 -->
+    <div class="floating-button">
+        <i class="fas fa-plus"></i>
+    </div>
+    
+    <!-- 底部标签栏 -->
+    <div class="tab-bar">
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div>首页</div>
+        </div>
+        <div class="tab-item active">
+            <div class="tab-icon">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div>商品</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div>订单</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-comment-dots"></i>
+            </div>
+            <div>消息</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div>我的</div>
+        </div>
+    </div>
+</body>
+</html> 

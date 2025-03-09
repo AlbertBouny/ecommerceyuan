@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 电商商家管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fb;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            overflow: auto;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #000;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        
+        .status-bar-time {
+            font-weight: 500;
+        }
+        
+        .status-bar-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, #ffd1d0, #ffc7c5);
+            padding: 20px 16px;
+            color: #333;
+        }
+        
+        .profile-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .store-header {
+            display: flex;
+            align-items: center;
+        }
+        
+        .store-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: white;
+            margin-right: 10px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #ff6b64;
+            box-shadow: 0 2px 8px rgba(255, 107, 100, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .store-name {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .store-verified {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 5px;
+            color: #52c41a;
+            font-size: 14px;
+        }
+        
+        .store-level {
+            display: inline-block;
+            font-size: 11px;
+            padding: 1px 5px;
+            background: linear-gradient(90deg, #ff8a00, #ff5500);
+            color: white;
+            border-radius: 10px;
+            margin-left: 5px;
+            font-weight: normal;
+        }
+        
+        .account-type {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .store-action {
+            background-color: #ff6b64;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        .store-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+        
+        .quick-actions {
+            background-color: white;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 10px solid #f0f0f0;
+        }
+        
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 22px;
+        }
+        
+        .action-label {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background-color: white;
+            padding: 15px 0;
+            border-bottom: 10px solid #f0f0f0;
+        }
+        
+        .function-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .function-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff4d4f;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .function-label {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .violation-card {
+            background-color: white;
+            padding: 15px 16px;
+            margin-bottom: 10px;
+        }
+        
+        .violation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .violation-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .arrow-icon {
+            color: #999;
+        }
+        
+        .violation-content {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .error-card {
+            background-color: white;
+            padding: 15px 16px;
+            margin-bottom: 10px;
+            color: #ff4d4f;
+        }
+        
+        .error-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .error-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .close-icon {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .error-content {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        
+        .error-link {
+            color: #ff4d4f;
+            text-decoration: underline;
+            text-align: right;
+            display: block;
+            margin-top: 5px;
+        }
+        
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: white;
+            display: flex;
+            border-top: 1px solid #f0f0f0;
+            z-index: 40;
+        }
+        
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 10px;
+            position: relative;
+        }
+        
+        .tab-item.active {
+            color: #e74c3c;
+        }
+        
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+            position: relative;
+        }
+        
+        .tab-badge {
+            position: absolute;
+            top: -5px;
+            right: -12px;
+            background-color: #e74c3c;
+            color: white;
+            font-size: 10px;
+            border-radius: 8px;
+            min-width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        .bottom-padding {
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">10:30</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-alarm-clock"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-signal"></i>
+            <span style="font-size: 12px; background-color: #ffcc00; color: #000; padding: 1px 5px; border-radius: 10px; font-weight: bold;">85</span>
+        </div>
+    </div>
+    
+    <!-- 个人信息头部 -->
+    <div class="header-section">
+        <div class="profile-top">
+            <div class="store-header">
+                <div class="store-logo">
+                    <span>智</span>
+                </div>
+                <div>
+                    <div class="store-name">智慧优选生活馆 <span class="store-verified"><i class="fas fa-check-circle"></i></span><span class="store-level">金牌商家</span></div>
+                    <div class="account-type">品牌商家 · 已认证</div>
+                </div>
+            </div>
+            <div class="store-action">
+                店铺主页 <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+            </div>
+        </div>
+        
+        <div class="store-stats">
+            <div class="stat-item">
+                <div class="stat-value">1</div>
+                <div class="stat-label">成长层级</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">--</div>
+                <div class="stat-label">店铺星级</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">0.00%</div>
+                <div class="stat-label">评价分排名</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">2.5</div>
+                <div class="stat-label">服务体验分</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 快捷操作 -->
+    <div class="quick-actions">
+        <div class="action-item">
+            <div class="action-icon">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div class="action-label">账户资金</div>
+        </div>
+        <div class="action-item">
+            <div class="action-icon">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="action-label">官方招商</div>
+        </div>
+        <div class="action-item">
+            <div class="action-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <div class="action-label">官方客服</div>
+        </div>
+    </div>
+    
+    <!-- 功能区 -->
+    <div class="function-grid">
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-truck-loading"></i>
+            </div>
+            <div class="function-label">售后订单</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="function-label">异常包裹</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-file-invoice"></i>
+                <span class="badge">4</span>
+            </div>
+            <div class="function-label">官方打单</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-truck"></i>
+            </div>
+            <div class="function-label">拦截快递</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+            <div class="function-label">工单管理</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-check-square"></i>
+            </div>
+            <div class="function-label">商品体检</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-search"></i>
+                <span class="badge"></span>
+            </div>
+            <div class="function-label">机会商品</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="function-label">违规信息</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-gavel"></i>
+            </div>
+            <div class="function-label">订单申诉</div>
+        </div>
+        <div class="function-item">
+            <div class="function-icon">
+                <i class="fas fa-cog"></i>
+                <span class="badge"></span>
+            </div>
+            <div class="function-label">设置</div>
+        </div>
+    </div>
+    
+    <!-- 违规信息卡片 -->
+    <div class="violation-card">
+        <div class="violation-header">
+            <div class="violation-title">违规公示</div>
+            <div class="arrow-icon"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <div class="violation-content">
+            违规：(母婴玩具)卖家俩**3，因多次缺货违规，被执行三级限制等措施
+        </div>
+    </div>
+    
+    <!-- 知识产权违规卡片 -->
+    <div class="error-card">
+        <div class="error-header">
+            <div class="error-title">知识产权违规信息</div>
+            <div class="close-icon"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="error-content">
+            店铺存在知识产权违规情况，请查看详情并申诉
+        </div>
+        <a href="#" class="error-link">违规信息</a>
+    </div>
+    
+    <div class="bottom-padding"></div>
+    
+    <!-- 底部标签栏 -->
+    <div class="tab-bar">
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div>首页</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-comment"></i>
+                <span class="tab-badge">28</span>
+            </div>
+            <div>聊天</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div>订单</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div>成长</div>
+        </div>
+        <div class="tab-item active">
+            <div class="tab-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div>我的</div>
+        </div>
+    </div>
+</body>
+</html> 

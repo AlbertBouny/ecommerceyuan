@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品详情 - 拼多多类电商App</title>
+    <link rel="stylesheet" href="enhanced-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 商品详情页特定样式 */
+        .product-detail-container {
+            padding-bottom: 70px; /* 为底部操作栏留出空间 */
+        }
+        
+        .product-gallery {
+            position: relative;
+            height: 375px;
+            background-color: #f5f5f5;
+        }
+        
+        .product-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .gallery-indicator {
+            position: absolute;
+            bottom: 15px;
+            right: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .gallery-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .gallery-dot.active {
+            background-color: white;
+            width: 18px;
+            border-radius: 3px;
+        }
+        
+        .gallery-counter {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+        }
+        
+        .product-info-section {
+            background-color: white;
+            padding: 20px 16px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .product-price-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .product-current-price {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--price-color);
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .product-current-price .currency {
+            font-size: 16px;
+            margin-right: 2px;
+        }
+        
+        .product-original-price-large {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            margin-left: 10px;
+        }
+        
+        .product-discount {
+            background-color: var(--discount-color);
+            color: white;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+        
+        .product-detail-title {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        
+        .product-tags {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            gap: 8px;
+        }
+        
+        .product-detail-sales {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .product-detail-sales i {
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        
+        .group-buy-section {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .group-buy-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--price-color);
+            display: flex;
+            align-items: baseline;
+        }
+        
+        .group-buy-price .currency {
+            font-size: 14px;
+            margin-right: 1px;
+        }
+        
+        .group-buy-price small {
+            font-size: 13px;
+            font-weight: normal;
+            margin-left: 5px;
+            background-color: var(--tag-background);
+            color: var(--tag-text);
+            padding: 2px 6px;
+            border-radius: var(--radius-full);
+        }
+        
+        .group-buy-info {
+            flex: 1;
+        }
+        
+        .group-buy-button {
+            background: var(--button-gradient);
+            color: white;
+            padding: 8px 20px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .group-buy-avatars {
+            display: flex;
+            margin-top: 8px;
+            align-items: center;
+        }
+        
+        .group-buy-avatar-large {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid white;
+            margin-left: -8px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .group-buy-avatar-large:first-child {
+            margin-left: 0;
+        }
+        
+        .group-buy-count-large {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-left: 8px;
+        }
+        
+        .product-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .product-section-title .more {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+        }
+        
+        .product-section-title .more i {
+            margin-left: 3px;
+            font-size: 10px;
+        }
+        
+        .product-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .product-spec {
+            background-color: #f5f5f5;
+            padding: 8px 15px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            color: var(--text-color);
+            transition: all 0.2s ease;
+        }
+        
+        .product-spec.selected {
+            background-color: var(--tag-background);
+            color: var(--tag-text);
+            font-weight: 500;
+        }
+        
+        .product-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .product-image-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .product-image-grid img {
+            width: 100%;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .shop-info {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .shop-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            overflow: hidden;
+            margin-right: 15px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .shop-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .shop-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+        
+        .shop-rating {
+            font-size: 13px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .shop-rating i {
+            color: #ffb800;
+            margin-right: 2px;
+        }
+        
+        .shop-button {
+            margin-left: auto;
+            background-color: #fff;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 6px 15px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .review-item {
+            margin-bottom: 20px;
+        }
+        
+        .review-user {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .review-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-right: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .review-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .review-username {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .review-rating {
+            margin-left: auto;
+            color: #ffb800;
+            font-size: 12px;
+        }
+        
+        .review-content {
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            padding: 12px;
+            border-radius: var(--radius-md);
+        }
+        
+        .review-images {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        
+        .review-image {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .review-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .review-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        .bottom-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+        
+        .action-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 15px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        
+        .action-icon i {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+        
+        .action-buttons {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .action-button {
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .buy-now {
+            background: var(--button-gradient);
+            color: white;
+        }
+        
+        .add-to-cart {
+            background: linear-gradient(135deg, #ff9500, #ff6b00);
+            color: white;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+        
+        .share-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+        
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+        
+        .feature-item i {
+            color: var(--success-color);
+            margin-right: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 商品详情内容 -->
+    <div class="product-detail-container">
+        <!-- 商品图片轮播 -->
+        <div class="product-gallery">
+            <a href="#" class="back-button">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+            <a href="#" class="share-button">
+                <i class="fas fa-share-alt"></i>
+            </a>
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="商品图片">
+            <div class="gallery-indicator">
+                <div class="gallery-dot active"></div>
+                <div class="gallery-dot"></div>
+                <div class="gallery-dot"></div>
+                <div class="gallery-dot"></div>
+                <div class="gallery-dot"></div>
+            </div>
+            <div class="gallery-counter">1/5</div>
+        </div>
+        
+        <!-- 商品价格信息 -->
+        <div class="product-info-section">
+            <div class="product-price-section">
+                <div class="product-current-price">
+                    <span class="currency">¥</span>89
+                </div>
+                <span class="product-original-price-large">¥199</span>
+                <span class="product-discount">5.5折</span>
+            </div>
+            
+            <h1 class="product-detail-title">智能手表 运动监测 心率检测 多功能通知 防水 长续航 男女通用</h1>
+            
+            <div class="product-tags">
+                <span class="tag">包邮</span>
+                <span class="tag">7天无理由退换</span>
+                <span class="tag">48小时发货</span>
+                <span class="tag">假一赔十</span>
+            </div>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>官方正品</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>全国联保</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>极速退款</span>
+                </div>
+            </div>
+            
+            <div class="product-detail-sales">
+                <i class="fas fa-fire"></i>
+                月销 25.6万件 · 好评率 98%
+            </div>
+            
+            <!-- 拼团信息 -->
+            <div class="group-buy-section">
+                <div class="group-buy-info">
+                    <div class="group-buy-price">
+                        <span class="currency">¥</span>69 <small>2人拼</small>
+                    </div>
+                    <div class="group-buy-avatars">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="用户头像" class="group-buy-avatar-large">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="group-buy-avatar-large">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="用户头像" class="group-buy-avatar-large">
+                        <span class="group-buy-count-large">2.5万人已拼，可省20元</span>
+                    </div>
+                </div>
+                <div class="group-buy-button">去拼团</div>
+            </div>
+        </div>
+        
+        <!-- 规格选择 -->
+        <div class="product-info-section">
+            <div class="product-section-title">
+                <span>规格选择</span>
+                <span class="more">查看全部 <i class="fas fa-chevron-right"></i></span>
+            </div>
+            
+            <div class="product-specs">
+                <div class="product-spec selected">黑色</div>
+                <div class="product-spec">银色</div>
+                <div class="product-spec">玫瑰金</div>
+                <div class="product-spec">蓝色</div>
+            </div>
+            
+            <div class="product-specs">
+                <div class="product-spec selected">标准版</div>
+                <div class="product-spec">高配版</div>
+                <div class="product-spec">豪华版</div>
+            </div>
+        </div>
+        
+        <!-- 店铺信息 -->
+        <div class="product-info-section">
+            <div class="shop-info">
+                <div class="shop-logo">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="店铺Logo">
+                </div>
+                <div>
+                    <div class="shop-name">智能科技旗舰店</div>
+                    <div class="shop-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        4.8
+                    </div>
+                </div>
+                <button class="shop-button">进店逛逛</button>
+            </div>
+        </div>
+        
+        <!-- 商品评价 -->
+        <div class="product-info-section">
+            <div class="product-section-title">
+                <span>商品评价(2.3万+)</span>
+                <span class="more">查看全部 <i class="fas fa-chevron-right"></i></span>
+            </div>
+            
+            <div class="review-item">
+                <div class="review-user">
+                    <div class="review-avatar">
+                        <img src="https://randomuser.me/api/portraits/women/62.jpg" alt="用户头像">
+                    </div>
+                    <div class="review-username">李**</div>
+                    <div class="review-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <div class="review-content">
+                    手表收到了，质量很好，功能也很全面，特别是心率监测很准确，续航也不错，用了一周才充一次电，很满意这次购买！
+                </div>
+                <div class="review-images">
+                    <div class="review-image">
+                        <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="评价图片">
+                    </div>
+                    <div class="review-image">
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="评价图片">
+                    </div>
+                </div>
+                <div class="review-time">2023-05-18</div>
+            </div>
+        </div>
+        
+        <!-- 商品详情 -->
+        <div class="product-info-section">
+            <div class="product-section-title">
+                <span>商品详情</span>
+            </div>
+            
+            <div class="product-description">
+                <p>【功能特点】</p>
+                <p>1. 心率监测：24小时实时监测心率变化</p>
+                <p>2. 睡眠监测：记录深浅睡眠，提供睡眠质量分析</p>
+                <p>3. 运动模式：支持跑步、骑行、游泳等多种运动模式</p>
+                <p>4. 消息提醒：来电、短信、社交软件消息提醒</p>
+                <p>5. 防水设计：IP68级防水，可游泳佩戴</p>
+                <p>6. 长续航：单次充电可使用7-10天</p>
+            </div>
+            
+            <div class="product-image-grid">
+                <img src="https://images.unsplash.com/photo-1579586337278-3befd40fd17a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="商品详情图">
+                <img src="https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="商品详情图">
+                <img src="https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="商品详情图">
+                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="商品详情图">
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部操作栏 -->
+    <div class="bottom-action-bar">
+        <div class="action-icon">
+            <i class="fas fa-store"></i>
+            <span>店铺</span>
+        </div>
+        <div class="action-icon">
+            <i class="far fa-heart"></i>
+            <span>收藏</span>
+        </div>
+        <div class="action-icon">
+            <i class="fas fa-shopping-cart"></i>
+            <span>购物车</span>
+        </div>
+        <div class="action-buttons">
+            <button class="action-button add-to-cart">加入购物车</button>
+            <button class="action-button buy-now">立即购买</button>
+        </div>
+    </div>
+</body>
+</html> 

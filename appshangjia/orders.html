@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 电商商家管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fb;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            overflow: auto;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #000;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        
+        .status-bar-time {
+            font-weight: 500;
+        }
+        
+        .status-bar-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 16px;
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            text-align: center;
+            flex-grow: 1;
+        }
+        
+        .header-icon {
+            width: 24px;
+            color: #666;
+            font-size: 22px;
+        }
+        
+        .tab-filter {
+            display: flex;
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
+        }
+        
+        .tab-filter::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .filter-item {
+            padding: 12px 15px;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+        }
+        
+        .filter-item:first-child {
+            margin-left: 10px;
+        }
+        
+        .filter-item:last-child {
+            margin-right: 10px;
+        }
+        
+        .filter-item.active {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .filter-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            right: 15px;
+            height: 2px;
+            background-color: #333;
+        }
+        
+        .sort-filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .sort-label {
+            color: #1890ff;
+        }
+        
+        .sort-action {
+            display: flex;
+            align-items: center;
+        }
+        
+        .sort-icon {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        
+        .order-item {
+            background-color: white;
+            margin-bottom: 1px;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .contact-button {
+            display: flex;
+            align-items: center;
+            color: #1890ff;
+            font-size: 14px;
+        }
+        
+        .contact-icon {
+            margin-right: 5px;
+            font-size: 16px;
+        }
+        
+        .order-id {
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+        
+        .order-status {
+            font-size: 14px;
+            color: #e74c3c;
+        }
+        
+        .order-product {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        
+        .product-image {
+            width: 80px;
+            height: 80px;
+            background-color: #f5f5f5;
+            margin-right: 12px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .product-info {
+            flex-grow: 1;
+        }
+        
+        .product-title {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 4px;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+        
+        .product-variant {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .product-price-qty {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .product-price {
+            font-weight: 500;
+        }
+        
+        .shipping-info {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .shipping-name {
+            margin-right: 10px;
+        }
+        
+        .eye-icon {
+            margin-left: 5px;
+            color: #999;
+        }
+        
+        .order-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .deadline-info {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .delivery-deadline {
+            color: #e74c3c;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            border: 1px solid #e0e0e0;
+            background-color: white;
+        }
+        
+        .primary-btn {
+            background-color: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: white;
+            display: flex;
+            border-top: 1px solid #f0f0f0;
+            z-index: 40;
+        }
+        
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 10px;
+            position: relative;
+        }
+        
+        .tab-item.active {
+            color: #e74c3c;
+        }
+        
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+            position: relative;
+        }
+        
+        .tab-badge {
+            position: absolute;
+            top: -5px;
+            right: -12px;
+            background-color: #e74c3c;
+            color: white;
+            font-size: 10px;
+            border-radius: 8px;
+            min-width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        .bottom-padding {
+            height: 60px;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">10:30</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-alarm-clock"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-signal"></i>
+            <span style="font-size: 12px; background-color: #ffcc00; color: #000; padding: 1px 5px; border-radius: 10px; font-weight: bold;">85</span>
+        </div>
+    </div>
+    
+    <!-- 页面标题 -->
+    <div class="page-header">
+        <div class="header-icon"></div>
+        <div class="header-title">订单管理</div>
+        <div class="header-icon">
+            <i class="fas fa-search"></i>
+        </div>
+    </div>
+    
+    <!-- 订单状态筛选 -->
+    <div class="tab-filter">
+        <div class="filter-item">待付款(1)</div>
+        <div class="filter-item active">待发货(4)</div>
+        <div class="filter-item">待收货(5)</div>
+        <div class="filter-item">退款售后</div>
+    </div>
+    
+    <!-- 排序筛选 -->
+    <div class="sort-filter">
+        <div class="sort-label">最先逾期在上</div>
+        <div class="sort-action">
+            筛选
+            <i class="fas fa-angle-down sort-icon"></i>
+        </div>
+    </div>
+    
+    <!-- 订单列表 -->
+    <div class="order-list">
+        <!-- 订单1 -->
+        <div class="order-item">
+            <div class="order-header">
+                <div class="contact-button">
+                    <i class="fas fa-comment-dots contact-icon"></i>
+                    联系 ****
+                </div>
+                <div class="order-status">待发货</div>
+            </div>
+            
+            <div class="order-product">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">儿童智能互动机器人电动玩具触摸感应语音对话故事机男孩</div>
+                    <div class="product-variant">黄色英文</div>
+                    <div class="product-price-qty">
+                        <div class="product-price">¥59.87</div>
+                        <div class="product-quantity">x1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="shipping-info">
+                <span class="shipping-name">刘** 1********2</span>
+                山西省 运城市 平陵县 ****
+                <i class="fas fa-eye eye-icon"></i>
+            </div>
+            
+            <div class="order-actions">
+                <div class="deadline-info">
+                    需在<span class="delivery-deadline">03月10日 11:46</span>前发货
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn">备注</button>
+                    <button class="action-btn primary-btn">发货</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 订单2 -->
+        <div class="order-item">
+            <div class="order-header">
+                <div class="contact-button">
+                    <i class="fas fa-comment-dots contact-icon"></i>
+                    联系 冷***
+                </div>
+                <div class="order-status">待发货</div>
+            </div>
+            
+            <div class="order-product">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">咕咕猪智能故事票听机0-12岁哄睡神器儿歌故事儿童启蒙益</div>
+                    <div class="product-variant">咕咕猪早教启蒙票听机</div>
+                    <div class="product-price-qty">
+                        <div class="product-price">¥42.76</div>
+                        <div class="product-quantity">x1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="shipping-info">
+                <span class="shipping-name">范** 1********6</span>
+                四川省 自贡市 荣县 ****
+                <i class="fas fa-eye eye-icon"></i>
+            </div>
+            
+            <div class="order-actions">
+                <div class="deadline-info">
+                    需在<span class="delivery-deadline">03月10日 20:51</span>前发货
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn">备注</button>
+                    <button class="action-btn primary-btn">发货</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 订单3 -->
+        <div class="order-item">
+            <div class="order-header">
+                <div class="contact-button">
+                    <i class="fas fa-comment-dots contact-icon"></i>
+                    联系 四***
+                </div>
+                <div class="order-status">待发货</div>
+            </div>
+            
+            <div class="order-product">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1534732806146-b3bf32171b48?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&h=400&q=80" alt="产品图片">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">遥控坦克可开炮仿真对战虎式装甲车履带式模型儿童男孩跨</div>
+                    <div class="product-variant">7通T90【金属银】,1组电</div>
+                    <div class="product-price-qty">
+                        <div class="product-price">¥37.88</div>
+                        <div class="product-quantity">x1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="shipping-info">
+                <span class="shipping-name">赵** 1********8</span>
+                河北省 石家庄市 长安区 ****
+                <i class="fas fa-eye eye-icon"></i>
+            </div>
+            
+            <div class="order-actions">
+                <div class="deadline-info">
+                    需在<span class="delivery-deadline">03月10日 22:33</span>前发货
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn">备注</button>
+                    <button class="action-btn primary-btn">发货</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bottom-padding"></div>
+    
+    <!-- 底部标签栏 -->
+    <div class="tab-bar">
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div>首页</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-comment"></i>
+                <span class="tab-badge">28</span>
+            </div>
+            <div>聊天</div>
+        </div>
+        <div class="tab-item active">
+            <div class="tab-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div>订单</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div>成长</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div>我的</div>
+        </div>
+    </div>
+</body>
+</html> 

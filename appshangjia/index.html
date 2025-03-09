@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商商家管理后台App原型</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fff;
+            padding: 0;
+            margin: 0;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 30px;
+        }
+        
+        .logo {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 15px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        
+        .description {
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto 60px;
+            line-height: 1.7;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .description p {
+            margin-bottom: 10px;
+        }
+        
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+            gap: 120px;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 50px;
+            text-align: center;
+            color: #333;
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: #e74c3c;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 70px;
+            justify-content: center;
+        }
+        
+        @media (max-width: 1600px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .phone-frame {
+                width: 450px;
+                height: 1200px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .phone-frame {
+                width: 400px;
+                height: 900px;
+            }
+        }
+        
+        @media (max-width: 500px) {
+            .phone-frame {
+                width: 320px;
+                height: 700px;
+            }
+        }
+        
+        .prototype-item {
+            background-color: white;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+            transition: transform 0.2s;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .prototype-item:hover {
+            transform: translateY(-5px);
+            box-shadow: none;
+        }
+        
+        .prototype-frame {
+            background-color: white;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            border-bottom: none;
+            margin-bottom: 15px;
+        }
+        
+        .phone-frame {
+            width: 500px;
+            height: 1400px;
+            border: none;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            background-color: white;
+            box-shadow: none;
+        }
+        
+        .phone-frame::before {
+            display: none;
+        }
+        
+        .phone-frame::after {
+            display: none;
+        }
+        
+        .phone-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .prototype-info {
+            padding: 20px 0;
+            text-align: center;
+            max-width: 500px;
+        }
+        
+        .prototype-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .prototype-description {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.6;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .tag {
+            font-size: 14px;
+            padding: 4px 12px;
+            border-radius: 2px;
+            background-color: #f8f8f8;
+            color: #666;
+        }
+        
+        .tag.core {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .tag.updated {
+            background-color: #fff1f0;
+            color: #e74c3c;
+        }
+        
+        .footer {
+            margin-top: 100px;
+            text-align: center;
+            font-size: 16px;
+            color: #999;
+            padding: 30px 0;
+            border-top: 1px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">电商商家管理后台App原型设计</h1>
+            <div class="subtitle">
+                这是一个为电商商家管理开发的高保真原型设计，每个页面都模拟了iPhone 15 Pro的尺寸，并使用了现代UI设计元素，确保视觉体验接近真实App。
+            </div>
+        </div>
+        
+        <div class="description">
+            <p>本项目提供电商商家管理后台App的高保真原型设计，采用扁平化设计风格和现代化交互体验，帮助开发团队清晰了解产品界面和功能结构。所有界面都使用HTML和CSS实现，精确模拟真实应用的视觉效果和用户体验。</p>
+            <p>原型包含商家日常经营管理所需的核心功能模块，从数据分析、订单处理到商品管理，全面覆盖电商商家运营流程中的各个环节，为后续开发提供准确、直观的参考。</p>
+        </div>
+        
+        <div class="grid-container">
+            <div>
+                <h2 class="section-title">核心功能界面</h2>
+                <div class="grid">
+                    <!-- 首页/仪表盘 -->
+                    <div class="prototype-item">
+                        <div class="prototype-frame">
+                            <div class="phone-frame">
+                                <iframe src="dashboard.html" title="仪表盘"></iframe>
+                            </div>
+                        </div>
+                        <div class="prototype-info">
+                            <div class="prototype-title">首页/仪表盘</div>
+                            <div class="prototype-description">展示销售数据、订单情况和商店运营状态的总览页面</div>
+                            <div class="tags">
+                                <span class="tag core">核心</span>
+                                <span class="tag updated">已优化</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 订单管理 -->
+                    <div class="prototype-item">
+                        <div class="prototype-frame">
+                            <div class="phone-frame">
+                                <iframe src="orders.html" title="订单列表"></iframe>
+                            </div>
+                        </div>
+                        <div class="prototype-info">
+                            <div class="prototype-title">订单管理</div>
+                            <div class="prototype-description">显示所有订单，支持多种状态筛选和搜索功能</div>
+                            <div class="tags">
+                                <span class="tag core">核心</span>
+                                <span class="tag updated">已优化</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 消息中心 -->
+                    <div class="prototype-item">
+                        <div class="prototype-frame">
+                            <div class="phone-frame">
+                                <iframe src="messages.html" title="消息中心"></iframe>
+                            </div>
+                        </div>
+                        <div class="prototype-info">
+                            <div class="prototype-title">消息中心/聊天</div>
+                            <div class="prototype-description">商家接收系统通知、客户咨询和重要提醒的集中地</div>
+                            <div class="tags">
+                                <span class="tag core">核心</span>
+                                <span class="tag updated">已优化</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 个人中心 -->
+                    <div class="prototype-item">
+                        <div class="prototype-frame">
+                            <div class="phone-frame">
+                                <iframe src="profile.html" title="个人中心"></iframe>
+                            </div>
+                        </div>
+                        <div class="prototype-info">
+                            <div class="prototype-title">个人中心/我的</div>
+                            <div class="prototype-description">商家个人资料、账户设置和店铺管理功能入口</div>
+                            <div class="tags">
+                                <span class="tag core">核心</span>
+                                <span class="tag updated">已优化</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h2 class="section-title">辅助功能界面</h2>
+                <div class="grid">
+                    <!-- 登录界面 -->
+                    <div class="prototype-item">
+                        <div class="prototype-frame">
+                            <div class="phone-frame">
+                                <iframe src="login.html" title="登录界面"></iframe>
+                            </div>
+                        </div>
+                        <div class="prototype-info">
+                            <div class="prototype-title">登录界面</div>
+                            <div class="prototype-description">商家用户登录入口，支持账号密码、验证码及第三方登录方式</div>
+                            <div class="tags">
+                                <span class="tag core">入口</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 订单详情 -->
+                    <div class="prototype-item">
+                        <div class="prototype-frame">
+                            <div class="phone-frame">
+                                <iframe src="order-detail.html" title="订单详情"></iframe>
+                            </div>
+                        </div>
+                        <div class="prototype-info">
+                            <div class="prototype-title">订单详情</div>
+                            <div class="prototype-description">单个订单的详细信息，包含商品、支付、物流等数据</div>
+                            <div class="tags">
+                                <span class="tag">订单管理</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 发货处理 -->
+                    <div class="prototype-item">
+                        <div class="prototype-frame">
+                            <div class="phone-frame">
+                                <iframe src="shipping.html" title="发货处理"></iframe>
+                            </div>
+                        </div>
+                        <div class="prototype-info">
+                            <div class="prototype-title">订单发货</div>
+                            <div class="prototype-description">填写物流信息，处理订单发货的操作界面</div>
+                            <div class="tags">
+                                <span class="tag">订单管理</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 商品列表 -->
+                    <div class="prototype-item">
+                        <div class="prototype-frame">
+                            <div class="phone-frame">
+                                <iframe src="products.html" title="商品列表"></iframe>
+                            </div>
+                        </div>
+                        <div class="prototype-info">
+                            <div class="prototype-title">商品列表</div>
+                            <div class="prototype-description">店铺全部商品管理，支持排序、筛选和搜索</div>
+                            <div class="tags">
+                                <span class="tag">商品管理</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            电商商家管理后台原型设计 © 2023 | 高保真UI设计原型
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单详情页PRD - 电商管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .sidebar {
+            background-color: #001529;
+            color: rgba(255, 255, 255, 0.65);
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px 40px;
+            max-width: 1200px;
+        }
+        .sidebar .logo {
+            height: 64px;
+            padding: 16px 24px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .sidebar .menu-item:hover {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        .prd-header {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .prd-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .version-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            background-color: #1890ff;
+        }
+        .flow-diagram, .prototype-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+        .requirement-priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .priority-high {
+            background-color: #ffccc7;
+            color: #a8071a;
+        }
+        .priority-medium {
+            background-color: #ffe58f;
+            color: #ad6800;
+        }
+        .priority-low {
+            background-color: #d9f7be;
+            color: #237804;
+        }
+        blockquote {
+            border-left: 4px solid #1890ff;
+            padding-left: 16px;
+            color: #666;
+            font-style: italic;
+        }
+        .toc-item {
+            display: block;
+            padding: 6px 0;
+            color: #1890ff;
+            text-decoration: none;
+        }
+        .toc-item:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store mr-2"></i> 电商管理系统
+        </div>
+        <nav class="mt-4">
+            <div class="menu-item">
+                <i class="fas fa-tachometer-alt"></i> 首页仪表盘
+            </div>
+            <div class="menu-item active">
+                <i class="fas fa-shopping-cart"></i> 订单管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-box"></i> 商品管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-users"></i> 客户管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-bullhorn"></i> 营销活动
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-chart-bar"></i> 数据分析
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-cog"></i> 系统设置
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主要内容区 -->
+    <main class="content">
+        <!-- PRD头部信息 -->
+        <div class="prd-header">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold">订单详情页 - 产品需求文档 (PRD)</h1>
+                <span class="version-badge">V1.0.0</span>
+            </div>
+            <div class="flex justify-between items-center text-gray-600">
+                <div>
+                    <span class="mr-4"><i class="far fa-calendar-alt mr-1"></i> 创建日期: 2023-05-20</span>
+                    <span><i class="far fa-user mr-1"></i> 作者: 产品经理 张三</span>
+                </div>
+                <div>
+                    <span><i class="far fa-clock mr-1"></i> 最后更新: 2023-05-25</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 文档目录 -->
+        <div class="prd-section">
+            <h2 class="text-xl font-bold mb-4">目录</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <a href="#version-info" class="toc-item">1. 版本信息</a>
+                    <a href="#terminology" class="toc-item">2. 名词解释</a>
+                    <a href="#revision-history" class="toc-item">3. 修改记录</a>
+                    <a href="#background" class="toc-item">4. 背景介绍</a>
+                </div>
+                <div>
+                    <a href="#requirements" class="toc-item">5. 需求清单</a>
+                    <a href="#flow-diagrams" class="toc-item">6. 业务流程图和功能流程图</a>
+                    <a href="#information-architecture" class="toc-item">7. 信息架构</a>
+                    <a href="#prototype" class="toc-item">8. 产品原型图</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 版本信息 -->
+        <div id="version-info" class="prd-section">
+            <h2 class="text-xl font-bold mb-4">1. 版本信息</h2>
+            <div class="table-responsive">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="py-3 px-4 text-left">文档名称</th>
+                            <th class="py-3 px-4 text-left">版本号</th>
+                            <th class="py-3 px-4 text-left">状态</th>
+                            <th class="py-3 px-4 text-left">密级</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">订单详情页产品需求文档</td>
+                            <td class="py-3 px-4">V1.0.0</td>
+                            <td class="py-3 px-4">初稿</td>
+                            <td class="py-3 px-4">公司内部</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 名词解释 -->
+        <div id="terminology" class="prd-section">
+            <h2 class="text-xl font-bold mb-4">2. 名词解释</h2>
+            <div class="table-responsive">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="py-3 px-4 text-left">名词</th>
+                            <th class="py-3 px-4 text-left">解释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">订单</td>
+                            <td class="py-3 px-4">用户在平台购买商品并提交的请求，包含商品信息、价格、收货地址等数据</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">SKU</td>
+                            <td class="py-3 px-4">Stock Keeping Unit，库存管理的最小单位，通常是具体规格的商品</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">订单状态</td>
+                            <td class="py-3 px-4">订单的不同处理阶段，包括待付款、待发货、已发货、已完成、已取消等</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">物流信息</td>
+                            <td class="py-3 px-4">订单包裹的运输信息，包括物流公司、运单号、包裹状态等</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4">售后信息</td>
+                            <td class="py-3 px-4">订单完成后的退款、退货、换货等服务相关信息</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 修改记录 -->
+        <div id="revision-history" class="prd-section">
+            <h2 class="text-xl font-bold mb-4">3. 修改记录</h2>
+            <div class="table-responsive">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="py-3 px-4 text-left">版本</th>
+                            <th class="py-3 px-4 text-left">日期</th>
+                            <th class="py-3 px-4 text-left">修改人</th>
+                            <th class="py-3 px-4 text-left">修改内容</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">V1.0.0</td>
+                            <td class="py-3 px-4">2023-05-20</td>
+                            <td class="py-3 px-4">张三</td>
+                            <td class="py-3 px-4">创建文档初稿</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">V1.0.1</td>
+                            <td class="py-3 px-4">2023-05-22</td>
+                            <td class="py-3 px-4">张三</td>
+                            <td class="py-3 px-4">根据产品评审会议反馈，优化需求清单和流程图</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 px-4">V1.0.2</td>
+                            <td class="py-3 px-4">2023-05-25</td>
+                            <td class="py-3 px-4">李四</td>
+                            <td class="py-3 px-4">新增原型图和信息架构部分</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 背景介绍 -->
+        <div id="background" class="prd-section">
+            <h2 class="text-xl font-bold mb-4">4. 背景介绍</h2>
+            
+            <h3 class="text-lg font-medium mb-3">4.1 项目背景</h3>
+            <p class="mb-4">
+                当前电商管理后台系统中，商家只能查看订单列表，无法查看和管理单个订单的详细信息，这给商家处理订单带来了不便。为了提高订单处理效率，需要开发一个功能完善的订单详情页，便于商家查看、处理和跟踪订单的各个方面。
+            </p>
+            
+            <h3 class="text-lg font-medium mb-3">4.2 用户需求</h3>
+            <p class="mb-4">
+                根据用户访谈和数据分析，我们发现商家在处理订单时有以下核心需求：
+            </p>
+            <ul class="list-disc pl-6 mb-4 space-y-2">
+                <li>需要一目了然地查看订单的基本信息和当前状态</li>
+                <li>能够快速处理订单（发货、修改订单等操作）</li>
+                <li>查看订单的完整历史记录和变更日志</li>
+                <li>查看和处理与订单相关的售后请求</li>
+                <li>能够方便地与客户沟通订单问题</li>
+            </ul>
+            
+            <h3 class="text-lg font-medium mb-3">4.3 业务目标</h3>
+            <p class="mb-2">通过开发订单详情页，我们希望实现以下业务目标：</p>
+            <ul class="list-disc pl-6 mb-4 space-y-2">
+                <li>提高商家处理订单的效率，缩短从收到订单到发货的时间</li>
+                <li>减少订单处理错误，提高客户满意度</li>
+                <li>提供更好的订单数据可视化，帮助商家了解订单状况</li>
+                <li>增强商家对异常订单的处理能力</li>
+            </ul>
+            
+            <blockquote class="my-4">
+                "我们希望通过优化订单详情页的设计，使商家能够更高效地管理订单流程，提升整体运营效率。"
+            </blockquote>
+        </div>
+
+        <!-- 需求清单 -->
+        <div id="requirements" class="prd-section">
+            <h2 class="text-xl font-bold mb-4">5. 需求清单</h2>
+            
+            <h3 class="text-lg font-medium mb-3">5.1 核心功能需求</h3>
+            <div class="table-responsive mb-6">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="py-3 px-4 text-left">ID</th>
+                            <th class="py-3 px-4 text-left">需求描述</th>
+                            <th class="py-3 px-4 text-left">优先级</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">FR-01</td>
+                            <td class="py-3 px-4">订单基础信息展示（订单号、状态、时间、金额等）</td>
+                            <td class="py-3 px-4"><span class="requirement-priority priority-high">高</span></td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">FR-02</td>
+                            <td class="py-3 px-4">订单商品与物流信息展示（商品信息、物流状态和轨迹）</td>
+                            <td class="py-3 px-4"><span class="requirement-priority priority-high">高</span></td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">FR-03</td>
+                            <td class="py-3 px-4">订单操作功能（发货、取消、联系客户等）</td>
+                            <td class="py-3 px-4"><span class="requirement-priority priority-high">高</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3 class="text-lg font-medium mb-3">5.2 非功能需求</h3>
+            <div class="table-responsive">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="py-3 px-4 text-left">ID</th>
+                            <th class="py-3 px-4 text-left">需求描述</th>
+                            <th class="py-3 px-4 text-left">优先级</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">NFR-01</td>
+                            <td class="py-3 px-4">性能：页面加载时间小于3秒，操作响应时间小于1秒</td>
+                            <td class="py-3 px-4"><span class="requirement-priority priority-high">高</span></td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 px-4">NFR-02</td>
+                            <td class="py-3 px-4">安全性：确保用户隐私信息保护，符合数据安全规范</td>
+                            <td class="py-3 px-4"><span class="requirement-priority priority-high">高</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 业务流程图和功能流程图 -->
+        <div id="flow-diagrams" class="prd-section">
+            <h2 class="text-xl font-bold mb-4">6. 业务流程图和功能流程图</h2>
+            
+            <h3 class="text-lg font-medium mb-3">6.1 订单状态流转图</h3>
+            <div class="mb-6">
+                <div class="p-4 border rounded-lg bg-white">
+                    <div class="mermaid">
+                        graph TD
+                            A[待付款] -->|支付成功| B[待发货]
+                            A -->|超时/用户取消| G[已取消]
+                            B -->|商家发货| C[已发货]
+                            B -->|同意退款| H[退款中]
+                            C -->|物流送达| D[已签收]
+                            C -->|申请退款退货| H
+                            D -->|确认收货| E[已完成]
+                            D -->|售后期内申请售后| H
+                            H -->|退款成功| I[已退款]
+                            
+                            style A fill:#FFE58F,stroke:#D48806
+                            style B fill:#BAE7FF,stroke:#1890FF
+                            style C fill:#EFD8FF,stroke:#722ED1
+                            style D fill:#D9F7BE,stroke:#389E0D
+                            style E fill:#B7EB8F,stroke:#52C41A
+                            style G fill:#FFCCC7,stroke:#CF1322
+                            style H fill:#FFC069,stroke:#D46B08
+                            style I fill:#FFA39E,stroke:#F5222D
+                    </div>
+                    <div class="text-sm text-gray-500 mt-4 text-center">图6.1：订单状态流转图，展示了订单从创建到完成的各个状态和转换</div>
+                </div>
+                
+                <div class="mt-6">
+                    <h4 class="font-medium mb-3">订单状态流转说明</h4>
+                    <p class="mb-4">
+                        订单在电商系统中会经历多个状态变化，从创建到最终完成或取消。上图展示了订单状态的完整生命周期和各状态间的转换关系。订单流转过程中的每个状态变更都会自动记录操作日志，便于追踪和问题溯源。
+                    </p>
+                    
+                    <p class="mb-4">
+                        订单状态流转的主要路径为：<span class="font-semibold">待付款 → 待发货 → 已发货 → 已签收 → 已完成</span>。同时，在流程中的不同阶段，订单可能被取消，或进入售后流程。
+                    </p>
+                    
+                    <div class="overflow-x-auto mb-6">
+                        <table class="min-w-full border">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="py-2 px-4 border text-left">订单状态</th>
+                                    <th class="py-2 px-4 border text-left">状态描述</th>
+                                    <th class="py-2 px-4 border text-left">触发条件</th>
+                                    <th class="py-2 px-4 border text-left">可执行操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="py-2 px-4 border font-medium">待付款</td>
+                                    <td class="py-2 px-4 border">买家已下单但尚未完成支付</td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>买家提交订单</li>
+                                        </ul>
+                                    </td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>提醒付款</li>
+                                            <li>修改订单价格</li>
+                                            <li>取消订单</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border font-medium">待发货</td>
+                                    <td class="py-2 px-4 border">买家已完成付款，商家需要安排发货</td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>买家支付成功</li>
+                                            <li>货到付款订单审核通过</li>
+                                        </ul>
+                                    </td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>确认发货</li>
+                                            <li>修改收货地址</li>
+                                            <li>申请退款（未发货）</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border font-medium">已发货</td>
+                                    <td class="py-2 px-4 border">商家已完成发货，物品在配送途中</td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>商家录入物流信息</li>
+                                            <li>系统确认发货</li>
+                                        </ul>
+                                    </td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>修改物流信息</li>
+                                            <li>确认签收</li>
+                                            <li>申请退款退货</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border font-medium">已签收</td>
+                                    <td class="py-2 px-4 border">买家已签收商品但尚未确认完成</td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>物流状态更新为已签收</li>
+                                            <li>买家确认收货</li>
+                                            <li>系统自动确认（超时）</li>
+                                        </ul>
+                                    </td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>申请售后</li>
+                                            <li>确认完成订单</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border font-medium">已完成</td>
+                                    <td class="py-2 px-4 border">订单全部流程已完成</td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>买家确认完成</li>
+                                            <li>自动确认完成（超过售后期）</li>
+                                        </ul>
+                                    </td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>查看订单</li>
+                                            <li>归档订单</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border font-medium">已取消</td>
+                                    <td class="py-2 px-4 border">订单已被买家或商家取消</td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>买家主动取消</li>
+                                            <li>商家取消订单</li>
+                                            <li>超时未付款自动取消</li>
+                                        </ul>
+                                    </td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>查看订单</li>
+                                            <li>重新下单</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border font-medium">退款中</td>
+                                    <td class="py-2 px-4 border">订单正在办理退款流程</td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>买家申请退款</li>
+                                            <li>商家发起退款</li>
+                                        </ul>
+                                    </td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>处理退款申请</li>
+                                            <li>协商退款条件</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 px-4 border font-medium">已退款</td>
+                                    <td class="py-2 px-4 border">退款已成功处理完毕</td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>退款成功完成</li>
+                                            <li>退款退货流程完成</li>
+                                        </ul>
+                                    </td>
+                                    <td class="py-2 px-4 border">
+                                        <ul class="list-disc pl-5 text-sm">
+                                            <li>查看订单</li>
+                                            <li>归档订单</li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="font-medium mb-3">状态转换规则与注意事项</h4>
+                    <ul class="list-disc pl-6 mb-4 space-y-2">
+                        <li>订单状态的转换必须遵循图示的流转路径，不允许跨越状态进行操作</li>
+                        <li>每次状态变更需记录操作人、操作时间、操作原因等信息</li>
+                        <li>部分状态转换可由系统自动触发，如超时未付款自动取消、确认收货超时自动完成等</li>
+                        <li>不同状态下，订单详情页应显示对应状态可执行的操作按钮，不可执行的操作应隐藏或置灰</li>
+                        <li>订单进入最终状态（已完成、已取消、已退款）后不可再变更</li>
+                    </ul>
+                    
+                    <h4 class="font-medium mb-3">状态展示要求</h4>
+                    <ul class="list-disc pl-6 mb-4 space-y-2">
+                        <li>订单列表和详情页需明确显示当前订单状态，使用不同颜色标识：
+                            <ul class="list-disc pl-6 mt-2">
+                                <li>待付款：橙色</li>
+                                <li>待发货：蓝色</li>
+                                <li>已发货：紫色</li>
+                                <li>已签收/已完成：绿色</li>
+                                <li>已取消/退款相关：红色</li>
+                            </ul>
+                        </li>
+                        <li>订单详情页需显示订单流程图，清晰标识当前所处阶段</li>
+                        <li>商家需要及时处理的状态（如待发货）应有醒目提示</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3 class="text-lg font-medium mb-3">6.2 订单详情页功能交互图</h3>
+            <div class="mb-6">
+                <div class="p-4 border rounded-lg bg-white">
+                    <div class="mermaid">
+                        graph TD
+                            %% 定义基本节点
+                            OrderList["订单列表页"] 
+                            OrderDetail["订单详情页"] 
+                            
+                            %% 定义信息区域节点
+                            InfoArea["基本信息区域"]
+                            OrderInfo["订单信息"]
+                            CustomerInfo["客户信息"]
+                            ProductInfo["商品信息"]
+                            LogisticsInfo["物流信息"]
+                            History["订单历史"]
+                            
+                            %% 定义操作区域节点
+                            OperationArea["订单操作区域"]
+                            PrintOrder["打印订单"]
+                            ContactBuyer["联系买家"]
+                            ConfirmShip["确认发货"]
+                            CancelOrder["取消订单"]
+                            RefundProcess["退款处理"]
+                            
+                            %% 主导航连接
+                            OrderList -->|"点击订单详情"| OrderDetail
+                            OrderDetail -->|"返回"| OrderList
+                            
+                            %% 详情页主要区域划分
+                            OrderDetail -->|"查看"| InfoArea
+                            OrderDetail -->|"操作"| OperationArea
+                            
+                            %% 信息区域连接
+                            InfoArea --> OrderInfo
+                            InfoArea --> CustomerInfo
+                            InfoArea --> ProductInfo
+                            InfoArea --> LogisticsInfo
+                            InfoArea --> History
+                            
+                            %% 操作区域连接
+                            OperationArea --> PrintOrder
+                            OperationArea --> ContactBuyer
+                            
+                            %% 状态依赖操作分组
+                            subgraph "状态依赖操作"
+                                OperationArea --> ConfirmShip
+                                OperationArea --> CancelOrder
+                                OperationArea --> RefundProcess
+                            end
+                            
+                            %% 节点样式
+                            classDef default fill:#f0f0ff,stroke:#6666cc,stroke-width:1px
+                            classDef main fill:#ccddff,stroke:#3355bb,stroke-width:2px
+                            classDef operation fill:#ffccf0,stroke:#993399,stroke-width:1px
+                            classDef statusDependent fill:#ffccf0,stroke:#993399,stroke-width:2px,stroke-dasharray: 5 2
+                            
+                            %% 应用节点样式
+                            class OrderList,OrderDetail main
+                            class InfoArea,OperationArea default
+                            class PrintOrder,ContactBuyer operation
+                            class ConfirmShip,CancelOrder,RefundProcess statusDependent
+                    </div>
+                    <div class="text-sm text-gray-500 mt-4 text-center">图6.2：订单详情页功能交互图，展示了用户与订单详情页的交互流程</div>
+                </div>
+            </div>
+        
+            <h3 class="text-lg font-medium mb-3">6.3 订单物流处理流程图</h3>
+            <div>
+                <div class="p-4 border rounded-lg bg-white">
+                    <div class="mermaid">
+                        flowchart TD
+                            A[确认订单] --> B{库存检查}
+                            B -->|库存充足| C[分配库存]
+                            B -->|库存不足| D[通知补货]
+                            D --> B
+                            C --> E[准备包裹]
+                            E --> F[生成物流单]
+                            F --> G[发货]
+                            G --> H[更新订单状态]
+                            I --> J{是否送达}
+                            J -->|未送达| I
+                            J -->|已送达| K[更新为已签收]
+                            K --> L[确认收货]
+                            L --> M[订单完成]
+                            
+                            style A fill:#d4f4fa,stroke:#0099cc
+                            style B fill:#ffe6cc,stroke:#ff9933
+                            style D fill:#ffcccc,stroke:#ff0000
+                            style G fill:#d9ead3,stroke:#6aa84f
+                            style M fill:#cfe2f3,stroke:#0066cc
+                    </div>
+                    <div class="text-sm text-gray-500 mt-4 text-center">图6.3：订单物流处理流程图，展示了订单从确认到物流跟踪的完整流程</div>
+                </div>
+            </div>
+            
+            <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+            <script>
+                mermaid.initialize({
+                    startOnLoad: true,
+                    theme: 'default',
+                    flowchart: { useMaxWidth: false }
+                });
+            </script>
+        </div>
+
+        <!-- 产品原型图 -->
+        <div id="prototype" class="prd-section">
+            <h2 class="text-xl font-bold mb-4">7. 产品原型图与需求描述</h2>
+            
+            <h3 class="text-lg font-medium mb-3">7.1 订单详情页整体布局</h3>
+            <div class="mb-6">
+                <div class="p-4 border rounded-lg bg-white">
+                    <div class="grid grid-cols-1 gap-4">
+                        <!-- 替换占位图为Mermaid布局图 -->
+                        <div class="mermaid">
+                            graph TD
+                                subgraph 订单详情页整体布局
+                                    Nav["顶部导航区<br>(页面标题/通知/用户信息)"]
+                                    Actions["操作按钮区<br>(打印订单/联系买家/状态相关操作)"]
+                                    Process["订单流程区<br>(订单状态流程图及各阶段时间)"]
+                                    
+                                    subgraph 信息展示区
+                                        InfoContainer["信息区域容器"]
+                                        OrderInfo["订单信息<br>(订单号/时间/支付方式)"]
+                                        CustomerInfo["客户信息<br>(联系方式/收货地址)"]
+                                        ProductInfo["商品信息<br>(商品列表/价格/数量)"]
+                                        LogisticsInfo["物流信息<br>(物流公司/单号/跟踪)"]
+                                        Records["操作记录<br>(状态变更/操作日志)"]
+                                    end
+                                    
+                                    Nav --> Actions
+                                    Actions --> Process
+                                    Process --> InfoContainer
+                                    InfoContainer --> OrderInfo
+                                    InfoContainer --> CustomerInfo
+                                    InfoContainer --> ProductInfo
+                                    InfoContainer --> LogisticsInfo
+                                    InfoContainer --> Records
+                                end
+
+                                style Nav fill:#f0f0ff,stroke:#6666cc,stroke-width:2px
+                                style Actions fill:#fff0f0,stroke:#cc6666,stroke-width:2px
+                                style Process fill:#f0fff0,stroke:#66cc66,stroke-width:2px
+                                style InfoContainer fill:#fffff0,stroke:#cccc66,stroke-width:1px,stroke-dasharray: 5 2
+                                style OrderInfo,CustomerInfo,ProductInfo,LogisticsInfo,Records fill:#f0f8ff,stroke:#6699cc,stroke-width:1px
+                        </div>
+
+                        <!-- 布局示例卡片 -->
+                        <div class="border rounded-md p-4 my-6 bg-gray-50">
+                            <div class="border-b pb-3 mb-3 flex justify-between items-center">
+                                <div class="font-bold">订单详情</div>
+                                <div class="flex items-center space-x-4">
+                                    <span class="w-6 h-6 bg-gray-300 rounded-full"></span>
+                                    <span class="text-gray-500 text-sm">用户信息</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center mb-3 text-sm">
+                                <div class="flex items-center">
+                                    <span class="text-blue-500">← 返回</span>
+                                    <span class="mx-2">|</span>
+                                    <span>订单号: OD-20230518-82735</span>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <span class="border px-2 py-1 rounded">打印订单</span>
+                                    <span class="border px-2 py-1 rounded">联系买家</span>
+                                    <span class="bg-blue-500 text-white px-2 py-1 rounded">确认收货</span>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded mb-3 p-3 bg-white">
+                                <div class="mb-2 font-medium">订单流程</div>
+                                <div class="flex justify-between items-center">
+                                    <div class="text-center">
+                                        <div class="w-5 h-5 rounded-full bg-green-500 mx-auto mb-1 text-white text-xs flex items-center justify-center">✓</div>
+                                        <div class="text-xs">下单</div>
+                                    </div>
+                                    <div class="border-t border-gray-300 flex-grow mx-1"></div>
+                                    <div class="text-center">
+                                        <div class="w-5 h-5 rounded-full bg-green-500 mx-auto mb-1 text-white text-xs flex items-center justify-center">✓</div>
+                                        <div class="text-xs">付款</div>
+                                    </div>
+                                    <div class="border-t border-gray-300 flex-grow mx-1"></div>
+                                    <div class="text-center">
+                                        <div class="w-5 h-5 rounded-full bg-green-500 mx-auto mb-1 text-white text-xs flex items-center justify-center">✓</div>
+                                        <div class="text-xs">发货</div>
+                                    </div>
+                                    <div class="border-t border-blue-500 flex-grow mx-1"></div>
+                                    <div class="text-center">
+                                        <div class="w-5 h-5 rounded-full bg-blue-500 mx-auto mb-1 text-white text-xs flex items-center justify-center">⟳</div>
+                                        <div class="text-xs">配送中</div>
+                                    </div>
+                                    <div class="border-t border-gray-300 flex-grow mx-1"></div>
+                                    <div class="text-center">
+                                        <div class="w-5 h-5 rounded-full bg-gray-300 mx-auto mb-1 text-xs flex items-center justify-center"></div>
+                                        <div class="text-xs">签收</div>
+                                    </div>
+                                    <div class="border-t border-gray-300 flex-grow mx-1"></div>
+                                    <div class="text-center">
+                                        <div class="w-5 h-5 rounded-full bg-gray-300 mx-auto mb-1 text-xs flex items-center justify-center"></div>
+                                        <div class="text-xs">完成</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <div class="border rounded p-2 bg-white">
+                                    <div class="font-medium text-sm mb-1">订单信息</div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div>订单编号: OD-20230518...</div>
+                                        <div>下单时间: 2023-05-18...</div>
+                                    </div>
+                                </div>
+                                <div class="border rounded p-2 bg-white">
+                                    <div class="font-medium text-sm mb-1">客户信息</div>
+                                    <div class="flex text-xs">
+                                        <div class="w-8 h-8 rounded-full bg-gray-300 mr-2"></div>
+                                        <div>刘志强<br>138****5678</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded p-2 mb-3 bg-white">
+                                <div class="font-medium text-sm mb-1">商品信息</div>
+                                <div class="flex justify-between text-xs border-b pb-1">
+                                    <div class="w-1/2">商品</div>
+                                    <div class="w-1/6">规格</div>
+                                    <div class="w-1/6">单价</div>
+                                    <div class="w-1/6">数量</div>
+                                </div>
+                                <div class="flex items-center text-xs py-1">
+                                    <div class="w-1/2 flex items-center">
+                                        <div class="w-8 h-8 bg-gray-300 mr-1"></div>
+                                        <div>无线蓝牙耳机</div>
+                                    </div>
+                                    <div class="w-1/6">黑色</div>
+                                    <div class="w-1/6">¥499</div>
+                                    <div class="w-1/6">1</div>
+                                </div>
+                            </div>
+                            
+                            <div class="border rounded p-2 bg-white">
+                                <div class="font-medium text-sm mb-1">物流信息</div>
+                                <div class="flex justify-between text-xs">
+                                    <div>物流公司: 顺丰速运</div>
+                                    <div>单号: SF1234567890123</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full border">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="py-2 px-4 border text-left">界面区域</th>
+                                        <th class="py-2 px-4 border text-left">功能描述</th>
+                                        <th class="py-2 px-4 border text-left">交互要求</th>
+                                        <th class="py-2 px-4 border text-left">布局设计要点</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="py-2 px-4 border">顶部导航栏</td>
+                                        <td class="py-2 px-4 border">显示当前页面标题、用户信息、通知提醒</td>
+                                        <td class="py-2 px-4 border">
+                                            <ul class="list-disc pl-5">
+                                                <li>点击返回按钮回到订单列表</li>
+                                                <li>点击通知图标查看最新系统通知</li>
+                                            </ul>
+                                        </td>
+                                        <td class="py-2 px-4 border">
+                                            <ul class="list-disc pl-5">
+                                                <li>固定在页面顶部</li>
+                                                <li>标题居左，用户信息居右</li>
+                                                <li>使用白色背景，突出显示</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border">操作按钮区</td>
+                                        <td class="py-2 px-4 border">提供订单相关的主要操作按钮</td>
+                                        <td class="py-2 px-4 border">
+                                            <ul class="list-disc pl-5">
+                                                <li>根据订单状态显示不同操作按钮</li>
+                                                <li>按钮点击后有明确的反馈</li>
+                                            </ul>
+                                        </td>
+                                        <td class="py-2 px-4 border">
+                                            <ul class="list-disc pl-5">
+                                                <li>主操作按钮使用强调色</li>
+                                                <li>次要操作使用边框样式</li>
+                                                <li>按钮排列从左到右按重要性递增</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border">订单进度区</td>
+                                        <td class="py-2 px-4 border">展示订单的处理进度及状态</td>
+                                        <td class="py-2 px-4 border">
+                                            <ul class="list-disc pl-5">
+                                                <li>清晰标识当前所处状态</li>
+                                                <li>显示各状态的时间节点</li>
+                                            </ul>
+                                        </td>
+                                        <td class="py-2 px-4 border">
+                                            <ul class="list-disc pl-5">
+                                                <li>使用步骤条设计</li>
+                                                <li>已完成步骤使用绿色</li>
+                                                <li>当前步骤使用蓝色</li>
+                                                <li>将所有状态均匀分布</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-4 border">信息展示区</td>
+                                        <td class="py-2 px-4 border">分区块展示订单信息、客户信息等</td>
+                                        <td class="py-2 px-4 border">
+                                            <ul class="list-disc pl-5">
+                                                <li>区块有明确的视觉分隔</li>
+                                                <li>信息排版清晰易读</li>
+                                            </ul>
+                                        </td>
+                                        <td class="py-2 px-4 border">
+                                            <ul class="list-disc pl-5">
+                                                <li>使用卡片式设计</li>
+                                                <li>重要信息区域优先布局在上方</li>
+                                                <li>相关信息分组展示</li>
+                                                <li>订单信息与客户信息并排展示节省空间</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-500 mt-4">图7.1：订单详情页的整体布局设计及功能需求</div>
+                </div>
+            </div>
+            
+            <h3 class="text-lg font-medium mb-3">7.2 订单基本信息和客户信息区域</h3>
+            <div class="mb-6">
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <!-- 订单基本信息 -->
+                    <div class="card p-6 border rounded">
+                        <h2 class="text-lg font-medium text-gray-800 mb-4">订单信息</h2>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-gray-500 text-sm">订单编号</div>
+                                <div>OD-20230518-82735</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500 text-sm">下单时间</div>
+                                <div>2023-05-18 10:15:32</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500 text-sm">支付方式</div>
+                                <div>支付宝</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500 text-sm">支付时间</div>
+                                <div>2023-05-18 10:20:45</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500 text-sm">支付流水号</div>
+                                <div>T20230518102045789</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500 text-sm">发货时间</div>
+                                <div>2023-05-18 14:30:12</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500 text-sm">订单来源</div>
+                                <div>移动端</div>
+                            </div>
+                            <div>
+                                <div class="text-gray-500 text-sm">交易单号</div>
+                                <div>TR20230518082735</div>
+                            </div>
+                            <div class="col-span-2">
+                                <div class="text-gray-500 text-sm">备注</div>
+                                <div>请快速发货，工作日白天不在家，请与我电话联系。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 客户信息 -->
+                    <div class="card p-6 border rounded">
+                        <h2 class="text-lg font-medium text-gray-800 mb-4">客户信息</h2>
+                        <div class="flex items-start mb-4">
+                            <div class="w-16 h-16 rounded-full bg-gray-200 mr-4 flex items-center justify-center">
+                                <i class="fas fa-user text-gray-400 text-2xl"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-lg">刘志强</div>
+                                <div class="text-gray-500">
+                                    <i class="fas fa-phone mr-1"></i> 138****5678
+                                </div>
+                                <div class="text-gray-500">
+                                    <i class="fas fa-envelope mr-1"></i> liu***@example.com
+                                </div>
+                                <div class="text-gray-500 text-sm mt-2">会员等级: VIP客户</div>
+                            </div>
+                        </div>
+                        <div class="border-t pt-4 mt-4">
+                            <h3 class="font-medium mb-2">收货地址</h3>
+                            <div class="text-gray-700">
+                                <div>刘志强 138****5678</div>
+                                <div>上海市浦东新区张江高科技园区科苑路88号9号楼503室</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto mb-4">
+                    <table class="min-w-full border">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 border text-left">区域</th>
+                                <th class="py-2 px-4 border text-left">字段</th>
+                                <th class="py-2 px-4 border text-left">描述</th>
+                                <th class="py-2 px-4 border text-left">数据要求</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-2 px-4 border" rowspan="5">订单信息</td>
+                                <td class="py-2 px-4 border">订单编号</td>
+                                <td class="py-2 px-4 border">唯一标识订单的编号</td>
+                                <td class="py-2 px-4 border">固定格式：OD-日期-序号</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">下单/支付时间</td>
+                                <td class="py-2 px-4 border">订单创建和支付的时间</td>
+                                <td class="py-2 px-4 border">格式：YYYY-MM-DD HH:MM:SS</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">支付方式/流水号</td>
+                                <td class="py-2 px-4 border">支付渠道和交易凭证</td>
+                                <td class="py-2 px-4 border">支付平台返回的唯一标识</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">订单来源</td>
+                                <td class="py-2 px-4 border">订单的下单渠道</td>
+                                <td class="py-2 px-4 border">PC端/移动端/小程序等</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">备注</td>
+                                <td class="py-2 px-4 border">客户或商家添加的备注信息</td>
+                                <td class="py-2 px-4 border">可为空，最多200字</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border" rowspan="4">客户信息</td>
+                                <td class="py-2 px-4 border">客户姓名</td>
+                                <td class="py-2 px-4 border">用户的真实姓名</td>
+                                <td class="py-2 px-4 border">必填字段</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">联系方式</td>
+                                <td class="py-2 px-4 border">手机号和邮箱</td>
+                                <td class="py-2 px-4 border">部分隐藏保护隐私</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">会员等级</td>
+                                <td class="py-2 px-4 border">客户的会员等级</td>
+                                <td class="py-2 px-4 border">根据店铺会员体系显示</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">收货地址</td>
+                                <td class="py-2 px-4 border">客户收货的详细地址</td>
+                                <td class="py-2 px-4 border">必填字段，完整显示</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="text-sm text-gray-500">图7.2：订单基本信息和客户信息区域的设计及字段说明</div>
+            </div>
+            
+            <h3 class="text-lg font-medium mb-3">7.3 商品信息和物流信息区域</h3>
+            <div>
+                <div class="card p-6 border rounded mb-6">
+                    <h2 class="text-lg font-medium text-gray-800 mb-4">商品信息</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-600 text-sm leading-normal">
+                                    <th class="py-3 px-4 text-left">商品</th>
+                                    <th class="py-3 px-4 text-left">规格</th>
+                                    <th class="py-3 px-4 text-left">单价</th>
+                                    <th class="py-3 px-4 text-left">数量</th>
+                                    <th class="py-3 px-4 text-left">小计</th>
+                                    <th class="py-3 px-4 text-left">状态</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-600 text-sm">
+                                <tr class="border-b border-gray-200">
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center">
+                                            <div class="w-16 h-16 bg-gray-200 mr-3 flex items-center justify-center rounded">
+                                                <i class="fas fa-headphones text-gray-400"></i>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium">无线蓝牙耳机</div>
+                                                <div class="text-gray-400">商品编号: PRD001238</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4">黑色 / 标准版</td>
+                                    <td class="py-3 px-4">¥499.00</td>
+                                    <td class="py-3 px-4">1</td>
+                                    <td class="py-3 px-4">¥499.00</td>
+                                    <td class="py-3 px-4"><span class="status-badge status-shipped">已发货</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="card p-6 border rounded mb-6">
+                    <h2 class="text-lg font-medium text-gray-800 mb-4">物流信息</h2>
+                    <div class="flex mb-4">
+                        <div class="w-1/3">
+                            <div class="text-gray-500 text-sm mb-1">物流公司</div>
+                            <div>顺丰速运</div>
+                        </div>
+                        <div class="w-1/3">
+                            <div class="text-gray-500 text-sm mb-1">物流单号</div>
+                            <div class="flex items-center">
+                                <span>SF1234567890123</span>
+                                <button class="ml-2 px-2 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100">复制</button>
+                            </div>
+                        </div>
+                        <div class="w-1/3">
+                            <div class="text-gray-500 text-sm mb-1">配送方式</div>
+                            <div>标准配送</div>
+                        </div>
+                    </div>
+                    <div class="border-t pt-4">
+                        <h3 class="font-medium mb-4">物流跟踪</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="font-medium">2023-05-19 10:15:32</div>
+                                <div class="text-gray-500">运输中，预计明天送达</div>
+                                <div class="text-gray-400 text-sm">广州转运中心 - 已发出</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto mb-4">
+                    <table class="min-w-full border">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 border text-left">区域</th>
+                                <th class="py-2 px-4 border text-left">功能</th>
+                                <th class="py-2 px-4 border text-left">交互要求</th>
+                                <th class="py-2 px-4 border text-left">技术要点</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-2 px-4 border" rowspan="3">商品信息</td>
+                                <td class="py-2 px-4 border">商品列表</td>
+                                <td class="py-2 px-4 border">清晰展示每个商品的关键信息</td>
+                                <td class="py-2 px-4 border">支持多商品展示，表格自适应</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">金额计算</td>
+                                <td class="py-2 px-4 border">显示商品价格、数量、优惠等</td>
+                                <td class="py-2 px-4 border">准确计算各项金额，支持多种优惠形式</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">商品状态</td>
+                                <td class="py-2 px-4 border">显示每个商品的当前状态</td>
+                                <td class="py-2 px-4 border">支持部分发货场景下的不同状态</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border" rowspan="3">物流信息</td>
+                                <td class="py-2 px-4 border">基本信息</td>
+                                <td class="py-2 px-4 border">清晰展示物流公司、单号等信息</td>
+                                <td class="py-2 px-4 border">支持复制物流单号功能</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">物流跟踪</td>
+                                <td class="py-2 px-4 border">时间线展示物流轨迹</td>
+                                <td class="py-2 px-4 border">实时对接物流API，自动更新状态</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border">配送信息</td>
+                                <td class="py-2 px-4 border">显示配送方式和预计送达时间</td>
+                                <td class="py-2 px-4 border">根据物流公司规则计算预计送达时间</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="text-sm text-gray-500">图7.3：商品信息和物流信息区域的设计及功能说明</div>
+            </div>
+        </div>
+
+        <!-- 文档结尾 -->
+        <div class="prd-section">
+            <h2 class="text-xl font-bold mb-4">附录和参考资料</h2>
+            
+            <h3 class="text-lg font-medium mb-3">A. 相关文档链接</h3>
+            <ul class="list-disc pl-6 mb-4 space-y-2">
+                <li><a href="#" class="text-blue-500 hover:underline">订单管理系统业务规范文档</a></li>
+                <li><a href="#" class="text-blue-500 hover:underline">物流信息对接API文档</a></li>
+                <li><a href="#" class="text-blue-500 hover:underline">电商平台用户体验设计规范</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html> 

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户管理 - 电商管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+        .sidebar {
+            background-color: #001529;
+            color: rgba(255, 255, 255, 0.65);
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .sidebar .logo {
+            height: 64px;
+            padding: 16px 24px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .sidebar .menu-item:hover {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .customer-level {
+            display: inline-block;
+            font-size: 12px;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+        .level-vip {
+            background: linear-gradient(135deg, #ffd54f, #ff9800);
+            color: #5d4037;
+        }
+        .level-regular {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+        .level-new {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        .tab-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-item.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+        }
+        .tab-item:hover:not(.active) {
+            color: #40a9ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store mr-2"></i> 电商管理系统
+        </div>
+        <nav class="mt-4">
+            <div class="menu-item">
+                <i class="fas fa-tachometer-alt"></i> 首页仪表盘
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-shopping-cart"></i> 订单管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-box"></i> 商品管理
+            </div>
+            <div class="menu-item active">
+                <i class="fas fa-users"></i> 客户管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-bullhorn"></i> 营销活动
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-chart-bar"></i> 数据分析
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-cog"></i> 系统设置
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主要内容区 -->
+    <main class="content">
+        <!-- 顶部导航栏 -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">客户管理</h1>
+            <div class="flex items-center">
+                <div class="mr-4 relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">3</span>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                    <span class="text-gray-700">张经理</span>
+                    <i class="fas fa-chevron-down ml-2 text-gray-500 text-xs"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户统计卡片 -->
+        <div class="grid grid-cols-4 gap-6 mb-6">
+            <div class="card p-4">
+                <div class="text-gray-500 mb-2">客户总数</div>
+                <div class="text-2xl font-bold text-gray-800">4,328</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up mr-1"></i> 16% 较上月
+                </div>
+            </div>
+            <div class="card p-4">
+                <div class="text-gray-500 mb-2">本月新增</div>
+                <div class="text-2xl font-bold text-green-500">238</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up mr-1"></i> 9% 较上月
+                </div>
+            </div>
+            <div class="card p-4">
+                <div class="text-gray-500 mb-2">VIP客户</div>
+                <div class="text-2xl font-bold text-yellow-500">156</div>
+                <div class="text-red-500 text-sm mt-2">
+                    <i class="fas fa-arrow-down mr-1"></i> 3% 较上月
+                </div>
+            </div>
+            <div class="card p-4">
+                <div class="text-gray-500 mb-2">客单价</div>
+                <div class="text-2xl font-bold text-blue-500">¥186</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up mr-1"></i> 7% 较上月
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户操作栏 -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex space-x-2">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 flex items-center">
+                    <i class="fas fa-plus mr-2"></i> 添加客户
+                </button>
+                <button class="bg-white text-gray-700 px-4 py-2 rounded border hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-paper-plane mr-2"></i> 群发消息
+                </button>
+                <button class="bg-white text-gray-700 px-4 py-2 rounded border hover:bg-gray-50 flex items-center">
+                    <i class="fas fa-file-export mr-2"></i> 导出
+                </button>
+            </div>
+            <div class="flex items-center">
+                <span class="text-gray-500 mr-2">刷新时间: 2023-05-18 15:45</span>
+                <button class="text-blue-500 hover:text-blue-700">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 客户标签页 -->
+        <div class="card mb-6">
+            <div class="flex border-b">
+                <div class="tab-item active font-medium">全部客户</div>
+                <div class="tab-item font-medium">VIP客户</div>
+                <div class="tab-item font-medium">活跃客户</div>
+                <div class="tab-item font-medium">新客户</div>
+                <div class="tab-item font-medium">流失风险</div>
+            </div>
+        </div>
+
+        <!-- 客户搜索和筛选 -->
+        <div class="card p-4 mb-6">
+            <div class="grid grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">客户信息</label>
+                    <input type="text" placeholder="姓名/手机号/邮箱" class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">客户等级</label>
+                    <select class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500 bg-white">
+                        <option value="">全部等级</option>
+                        <option value="vip">VIP客户</option>
+                        <option value="regular">普通客户</option>
+                        <option value="new">新客户</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">消费金额</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="number" placeholder="最低金额" class="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                        <span class="text-gray-500">-</span>
+                        <input type="number" placeholder="最高金额" class="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">注册时间</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="date" class="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                        <span class="text-gray-500">至</span>
+                        <input type="date" class="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded mr-2 hover:bg-gray-200">重置</button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">搜索</button>
+            </div>
+        </div>
+
+        <!-- 客户表格 -->
+        <div class="card p-4 mb-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-sm leading-normal">
+                            <th class="py-3 px-4 text-left">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-500">
+                            </th>
+                            <th class="py-3 px-4 text-left">客户信息</th>
+                            <th class="py-3 px-4 text-left">等级</th>
+                            <th class="py-3 px-4 text-left">消费总额</th>
+                            <th class="py-3 px-4 text-left">订单数</th>
+                            <th class="py-3 px-4 text-left">最近购买</th>
+                            <th class="py-3 px-4 text-left">注册时间</th>
+                            <th class="py-3 px-4 text-left">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-500">
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/men/72.jpg" alt="客户头像" class="avatar mr-3">
+                                    <div>
+                                        <div class="font-medium">刘志强</div>
+                                        <div class="text-gray-400">138****5678</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="customer-level level-vip">VIP客户</span>
+                            </td>
+                            <td class="py-3 px-4">¥12,567.00</td>
+                            <td class="py-3 px-4">32</td>
+                            <td class="py-3 px-4">2023-05-15</td>
+                            <td class="py-3 px-4">2022-01-15</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">查看</button>
+                                <button class="text-green-500 hover:text-green-700 mr-2">消息</button>
+                                <button class="text-gray-500 hover:text-gray-700">更多</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-500">
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="客户头像" class="avatar mr-3">
+                                    <div>
+                                        <div class="font-medium">王丽丽</div>
+                                        <div class="text-gray-400">137****1234</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="customer-level level-regular">普通客户</span>
+                            </td>
+                            <td class="py-3 px-4">¥3,867.50</td>
+                            <td class="py-3 px-4">8</td>
+                            <td class="py-3 px-4">2023-05-10</td>
+                            <td class="py-3 px-4">2022-08-23</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">查看</button>
+                                <button class="text-green-500 hover:text-green-700 mr-2">消息</button>
+                                <button class="text-gray-500 hover:text-gray-700">更多</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-500">
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="客户头像" class="avatar mr-3">
+                                    <div>
+                                        <div class="font-medium">张文明</div>
+                                        <div class="text-gray-400">186****9012</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="customer-level level-new">新客户</span>
+                            </td>
+                            <td class="py-3 px-4">¥458.00</td>
+                            <td class="py-3 px-4">1</td>
+                            <td class="py-3 px-4">2023-05-17</td>
+                            <td class="py-3 px-4">2023-05-17</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">查看</button>
+                                <button class="text-green-500 hover:text-green-700 mr-2">消息</button>
+                                <button class="text-gray-500 hover:text-gray-700">更多</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-500">
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/28.jpg" alt="客户头像" class="avatar mr-3">
+                                    <div>
+                                        <div class="font-medium">陈小红</div>
+                                        <div class="text-gray-400">152****7890</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="customer-level level-vip">VIP客户</span>
+                            </td>
+                            <td class="py-3 px-4">¥8,926.00</td>
+                            <td class="py-3 px-4">24</td>
+                            <td class="py-3 px-4">2023-05-12</td>
+                            <td class="py-3 px-4">2022-03-18</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">查看</button>
+                                <button class="text-green-500 hover:text-green-700 mr-2">消息</button>
+                                <button class="text-gray-500 hover:text-gray-700">更多</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">
+                                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-500">
+                            </td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="客户头像" class="avatar mr-3">
+                                    <div>
+                                        <div class="font-medium">李明辉</div>
+                                        <div class="text-gray-400">139****4567</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="customer-level level-regular">普通客户</span>
+                            </td>
+                            <td class="py-3 px-4">¥2,345.50</td>
+                            <td class="py-3 px-4">6</td>
+                            <td class="py-3 px-4">2023-04-28</td>
+                            <td class="py-3 px-4">2022-11-05</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">查看</button>
+                                <button class="text-green-500 hover:text-green-700 mr-2">消息</button>
+                                <button class="text-gray-500 hover:text-gray-700">更多</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分页 -->
+            <div class="mt-4 flex justify-between items-center">
+                <div class="text-gray-500 text-sm">
+                    共 4,328 条记录，每页显示 10 条
+                </div>
+                <div class="flex">
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 bg-gray-100">上一页</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-white bg-blue-500">1</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 hover:bg-gray-100">2</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 hover:bg-gray-100">3</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 hover:bg-gray-100">4</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 hover:bg-gray-100">5</button>
+                    <button class="border rounded px-3 py-1 text-gray-600 hover:bg-gray-100">下一页</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 

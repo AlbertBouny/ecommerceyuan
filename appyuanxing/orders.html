@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单 - 拼多多类电商App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 订单列表页面特定样式 */
+        .orders-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .orders-back {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .orders-title {
+            font-size: 18px;
+            font-weight: bold;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .orders-search {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .orders-tabs {
+            display: flex;
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .orders-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 0;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .orders-tab.active {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .orders-tab.active:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .orders-container {
+            padding-bottom: 60px; /* 为底部导航栏留出空间 */
+        }
+        
+        .order-item {
+            background-color: white;
+            margin-bottom: 10px;
+        }
+        
+        .order-shop {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .order-shop-icon {
+            margin-right: 5px;
+            color: #666;
+        }
+        
+        .order-shop-name {
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .order-status {
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+        
+        .order-product {
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .order-product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-right: 10px;
+        }
+        
+        .order-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .order-product-info {
+            flex: 1;
+        }
+        
+        .order-product-title {
+            font-size: 14px;
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+        
+        .order-product-spec {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .order-product-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-product-price {
+            color: var(--price-color);
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .order-product-quantity {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .order-summary {
+            padding: 10px 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .order-total {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .order-total-price {
+            font-weight: bold;
+        }
+        
+        .order-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 15px;
+            gap: 10px;
+        }
+        
+        .order-action-button {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            border: 1px solid #ddd;
+            background-color: white;
+        }
+        
+        .order-action-button.primary {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .order-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 0;
+            color: #999;
+        }
+        
+        .order-empty i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        .order-empty-text {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .order-empty-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 订单列表头部 -->
+    <div class="orders-header">
+        <div class="orders-back">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="orders-title">我的订单</div>
+        <div class="orders-search">
+            <i class="fas fa-search"></i>
+        </div>
+    </div>
+    
+    <!-- 订单状态标签页 -->
+    <div class="orders-tabs">
+        <div class="orders-tab active">全部</div>
+        <div class="orders-tab">待付款</div>
+        <div class="orders-tab">待发货</div>
+        <div class="orders-tab">待收货</div>
+        <div class="orders-tab">待评价</div>
+    </div>
+    
+    <!-- 订单列表内容 -->
+    <div class="orders-container">
+        <!-- 订单1: 待付款 -->
+        <div class="order-item">
+            <div class="order-shop">
+                <i class="fas fa-store order-shop-icon"></i>
+                <div class="order-shop-name">智能科技旗舰店</div>
+                <div class="order-status">待付款</div>
+            </div>
+            
+            <div class="order-product">
+                <div class="order-product-image">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="商品图片">
+                </div>
+                <div class="order-product-info">
+                    <div class="order-product-title">智能手表 运动监测 心率检测 多功能通知 防水 长续航</div>
+                    <div class="order-product-spec">黑色 | 标准版</div>
+                    <div class="order-product-price-row">
+                        <div class="order-product-price">¥89</div>
+                        <div class="order-product-quantity">x1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-summary">
+                <div class="order-total">
+                    共1件商品 合计: <span class="order-total-price">¥89</span>（含运费¥0）
+                </div>
+            </div>
+            
+            <div class="order-actions">
+                <button class="order-action-button">取消订单</button>
+                <button class="order-action-button primary">付款</button>
+            </div>
+        </div>
+        
+        <!-- 订单2: 待发货 -->
+        <div class="order-item">
+            <div class="order-shop">
+                <i class="fas fa-store order-shop-icon"></i>
+                <div class="order-shop-name">数码配件专营店</div>
+                <div class="order-status">待发货</div>
+            </div>
+            
+            <div class="order-product">
+                <div class="order-product-image">
+                    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="商品图片">
+                </div>
+                <div class="order-product-info">
+                    <div class="order-product-title">无线蓝牙耳机 降噪 长续航 舒适佩戴</div>
+                    <div class="order-product-spec">白色 | 标准版</div>
+                    <div class="order-product-price-row">
+                        <div class="order-product-price">¥59</div>
+                        <div class="order-product-quantity">x2</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-summary">
+                <div class="order-total">
+                    共2件商品 合计: <span class="order-total-price">¥118</span>（含运费¥0）
+                </div>
+            </div>
+            
+            <div class="order-actions">
+                <button class="order-action-button">提醒发货</button>
+                <button class="order-action-button">联系客服</button>
+            </div>
+        </div>
+        
+        <!-- 订单3: 待收货 -->
+        <div class="order-item">
+            <div class="order-shop">
+                <i class="fas fa-store order-shop-icon"></i>
+                <div class="order-shop-name">家居日用专营店</div>
+                <div class="order-status">待收货</div>
+            </div>
+            
+            <div class="order-product">
+                <div class="order-product-image">
+                    <img src="https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="商品图片">
+                </div>
+                <div class="order-product-info">
+                    <div class="order-product-title">保温杯 304不锈钢 大容量 便携水杯</div>
+                    <div class="order-product-spec">蓝色 | 500ml</div>
+                    <div class="order-product-price-row">
+                        <div class="order-product-price">¥29</div>
+                        <div class="order-product-quantity">x1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-summary">
+                <div class="order-total">
+                    共1件商品 合计: <span class="order-total-price">¥29</span>（含运费¥0）
+                </div>
+            </div>
+            
+            <div class="order-actions">
+                <button class="order-action-button">查看物流</button>
+                <button class="order-action-button primary">确认收货</button>
+            </div>
+        </div>
+        
+        <!-- 订单4: 待评价 -->
+        <div class="order-item">
+            <div class="order-shop">
+                <i class="fas fa-store order-shop-icon"></i>
+                <div class="order-shop-name">运动户外专营店</div>
+                <div class="order-status">待评价</div>
+            </div>
+            
+            <div class="order-product">
+                <div class="order-product-image">
+                    <img src="https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="商品图片">
+                </div>
+                <div class="order-product-info">
+                    <div class="order-product-title">运动鞋男 轻便透气 减震耐磨 休闲跑步鞋</div>
+                    <div class="order-product-spec">黑色 | 42码</div>
+                    <div class="order-product-price-row">
+                        <div class="order-product-price">¥79</div>
+                        <div class="order-product-quantity">x1</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="order-summary">
+                <div class="order-total">
+                    共1件商品 合计: <span class="order-total-price">¥79</span>（含运费¥0）
+                </div>
+            </div>
+            
+            <div class="order-actions">
+                <button class="order-action-button">申请售后</button>
+                <button class="order-action-button primary">评价</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <a href="#" class="tab-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-th-large"></i>
+            <span>分类</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-fire"></i>
+            <span>发现</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>购物车</span>
+        </a>
+        <a href="#" class="tab-item active">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+</html> 

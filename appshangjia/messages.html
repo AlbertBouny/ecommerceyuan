@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>消息中心 - 电商商家管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8f9fb;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            overflow: auto;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #000;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        
+        .status-bar-time {
+            font-weight: 500;
+        }
+        
+        .status-bar-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .store-header {
+            padding: 14px 16px;
+            background-color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .store-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .store-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .store-status {
+            display: flex;
+            align-items: center;
+            margin-left: 6px;
+            padding: 2px 10px;
+            border-radius: 15px;
+            background-color: rgba(240, 240, 240, 0.5);
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: #52c41a;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        
+        .header-icons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .header-icon {
+            font-size: 22px;
+            color: #333;
+        }
+        
+        .notification-banner {
+            background-color: #f0f7ff;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #1677ff;
+            font-size: 14px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .banner-icon {
+            color: #1677ff;
+            margin-right: 8px;
+            font-size: 16px;
+        }
+        
+        .banner-action {
+            color: white;
+            background-color: #1677ff;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+        
+        .notice-categories {
+            display: flex;
+            justify-content: space-around;
+            background-color: white;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .notice-category {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+            font-size: 24px;
+            color: #666;
+        }
+        
+        .category-label {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background-color: #ff4d4f;
+            color: white;
+            font-size: 10px;
+            border-radius: 10px;
+            min-width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        .tab-filter {
+            display: flex;
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .filter-item {
+            padding: 12px 0;
+            font-size: 14px;
+            color: #666;
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        
+        .filter-item.active {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .filter-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #333;
+        }
+        
+        .chat-section-title {
+            background-color: #f8f9fb;
+            padding: 10px 16px;
+            font-size: 14px;
+            color: #666;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .message-list {
+            background-color: white;
+        }
+        
+        .message-item {
+            display: flex;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+        
+        .message-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            background-color: #f0f0f0;
+            margin-right: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .message-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .message-content {
+            flex-grow: 1;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+        
+        .message-sender {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+        }
+        
+        .message-preview {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .message-status {
+            text-align: right;
+            font-size: 12px;
+            padding: 2px 8px;
+            background-color: #fff8e6;
+            color: #fa8c16;
+            border-radius: 4px;
+            display: inline-block;
+            float: right;
+        }
+        
+        .shop-tag {
+            display: inline-block;
+            background-color: #e6f7ff;
+            color: #1890ff;
+            border-radius: 2px;
+            padding: 1px 4px;
+            font-size: 10px;
+            margin-left: 6px;
+        }
+        
+        .customer-tag {
+            display: inline-block;
+            background-color: #f0f7ff;
+            color: #5c7be0;
+            border-radius: 2px;
+            padding: 1px 4px;
+            font-size: 10px;
+            margin-left: 6px;
+        }
+        
+        .unread-dot {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4d4f;
+            border-radius: 50%;
+        }
+        
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: white;
+            display: flex;
+            border-top: 1px solid #f0f0f0;
+            z-index: 40;
+        }
+        
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 10px;
+            position: relative;
+        }
+        
+        .tab-item.active {
+            color: #e74c3c;
+        }
+        
+        .tab-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+            position: relative;
+        }
+        
+        .tab-badge {
+            position: absolute;
+            top: -5px;
+            right: -12px;
+            background-color: #e74c3c;
+            color: white;
+            font-size: 10px;
+            border-radius: 8px;
+            min-width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        .bottom-padding {
+            height: 60px;
+        }
+        
+        .robot-message {
+            background-color: #f8f9fb;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .robot-icon {
+            display: flex;
+            align-items: center;
+            color: #1890ff;
+            font-size: 14px;
+        }
+        
+        .robot-icon i {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+        
+        .robot-action {
+            color: #1890ff;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- iOS状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">10:30</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-alarm-clock"></i>
+            <i class="fas fa-battery-three-quarters"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-signal"></i>
+            <span style="font-size: 12px; background-color: #ffcc00; color: #000; padding: 1px 5px; border-radius: 10px; font-weight: bold;">85</span>
+        </div>
+    </div>
+    
+    <!-- 商店信息 -->
+    <div class="store-header">
+        <div class="store-info">
+            <div class="store-name">智***社</div>
+            <div class="store-status">
+                <div class="status-indicator"></div>
+                <span>在线</span>
+            </div>
+        </div>
+        <div class="header-icons">
+            <div class="header-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="header-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 通知提醒横幅 -->
+    <div class="notification-banner">
+        <div>
+            <i class="fas fa-info-circle banner-icon"></i>
+            会错过消息提醒
+        </div>
+        <div class="banner-action">
+            您有权限：去看看
+        </div>
+    </div>
+    
+    <!-- 消息分类 -->
+    <div class="notice-categories">
+        <div class="notice-category">
+            <div class="category-icon">
+                <i class="fas fa-clipboard-list"></i>
+                <span class="badge">10</span>
+            </div>
+            <div class="category-label">订单通知</div>
+        </div>
+        <div class="notice-category">
+            <div class="category-icon">
+                <i class="fas fa-store"></i>
+                <span class="badge">3</span>
+            </div>
+            <div class="category-label">店铺预警</div>
+        </div>
+        <div class="notice-category">
+            <div class="category-icon">
+                <i class="fas fa-bullhorn"></i>
+                <span class="badge">8</span>
+            </div>
+            <div class="category-label">官方通知</div>
+        </div>
+        <div class="notice-category">
+            <div class="category-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <div class="category-label">站内信</div>
+        </div>
+    </div>
+    
+    <!-- 消息列表筛选器 -->
+    <div class="tab-filter">
+        <div class="filter-item active">今日需接待</div>
+        <div class="filter-item">全部会话</div>
+        <div class="filter-item">收藏会话</div>
+    </div>
+    
+    <!-- 客服机器人提示 -->
+    <div class="robot-message">
+        <div class="robot-icon">
+            <i class="fas fa-robot"></i>
+            <span>客服机器人正在为您服务</span>
+        </div>
+        <div class="robot-action">去设置</div>
+    </div>
+    
+    <!-- 其他店铺消息 -->
+    <div class="chat-section-title">
+        其他店铺的消息(2)
+    </div>
+    
+    <div class="message-list">
+        <!-- 消息1 -->
+        <div class="message-item">
+            <div class="message-avatar">
+                <img src="https://via.placeholder.com/100/f5a623/ffffff?text=远" alt="店铺logo">
+                <div class="unread-dot"></div>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <div class="message-sender">远文消费 <span class="shop-tag">店铺</span></div>
+                    <div class="message-time">09:25</div>
+                </div>
+                <div class="message-preview">[当前用户来自 商品详情...</div>
+                <div class="message-status">已等待1小时</div>
+            </div>
+        </div>
+        
+        <!-- 消息2 -->
+        <div class="message-item">
+            <div class="message-avatar">
+                <img src="https://via.placeholder.com/100/663399/ffffff?text=匠" alt="店铺logo">
+                <div class="unread-dot"></div>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <div class="message-sender">匠心五金小铺 <span class="shop-tag">店铺</span></div>
+                    <div class="message-time">星期二</div>
+                </div>
+                <div class="message-preview">是的</div>
+                <div class="message-status">已等待4天</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 过期会话 -->
+    <div class="chat-section-title">
+        已超时待回复(5)
+    </div>
+    
+    <div class="message-list">
+        <!-- 消息3 -->
+        <div class="message-item">
+            <div class="message-avatar">
+                <img src="https://via.placeholder.com/100/666666/ffffff?text=用户" alt="用户头像">
+                <div class="unread-dot"></div>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <div class="message-sender">我***</div>
+                    <div class="message-time">09:18</div>
+                </div>
+                <div class="message-preview">消费者咨询重要售后问题...</div>
+                <div class="message-status">已等待7小时</div>
+            </div>
+        </div>
+        
+        <!-- 消息4 -->
+        <div class="message-item">
+            <div class="message-avatar">
+                <img src="https://via.placeholder.com/100/444444/ffffff?text=用户" alt="用户头像">
+                <div class="unread-dot"></div>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <div class="message-sender">上***</div>
+                    <div class="message-time">昨天</div>
+                </div>
+                <div class="message-preview">保多久这个机器人</div>
+                <div class="message-status">已等待11小时</div>
+            </div>
+        </div>
+        
+        <!-- 消息5 -->
+        <div class="message-item">
+            <div class="message-avatar">
+                <img src="https://via.placeholder.com/100/f1c40f/ffffff?text=客户" alt="用户头像">
+                <div class="unread-dot"></div>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <div class="message-sender">快*** <span class="customer-tag">老客</span></div>
+                    <div class="message-time">07:33</div>
+                </div>
+                <div class="message-preview">[当前用户来自 商品详情...</div>
+                <div class="message-status">已等待18小时</div>
+            </div>
+        </div>
+        
+        <!-- 消息6 -->
+        <div class="message-item">
+            <div class="message-avatar">
+                <img src="https://via.placeholder.com/100/3498db/ffffff?text=用户" alt="用户头像">
+                <div class="unread-dot"></div>
+            </div>
+            <div class="message-content">
+                <div class="message-header">
+                    <div class="message-sender">蓝***</div>
+                    <div class="message-time">昨天</div>
+                </div>
+                <div class="message-preview">这个商品是全新的吗？</div>
+                <div class="message-status">已等待20小时</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bottom-padding"></div>
+    
+    <!-- 底部标签栏 -->
+    <div class="tab-bar">
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-home"></i>
+            </div>
+            <div>首页</div>
+        </div>
+        <div class="tab-item active">
+            <div class="tab-icon">
+                <i class="fas fa-comment"></i>
+                <span class="tab-badge">28</span>
+            </div>
+            <div>聊天</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <div>订单</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div>成长</div>
+        </div>
+        <div class="tab-item">
+            <div class="tab-icon">
+                <i class="fas fa-user"></i>
+            </div>
+            <div>我的</div>
+        </div>
+    </div>
+</body>
+</html> 

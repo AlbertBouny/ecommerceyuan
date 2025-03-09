@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拼多多类电商App原型 - 增强版</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        .prototype-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 40px;
+            margin: 0 auto;
+            max-width: 1800px;
+        }
+        
+        .phone-frame {
+            width: 393px; /* iPhone 15 Plus width */
+            height: 852px; /* iPhone 15 Plus height */
+            background: white;
+            border-radius: 55px; /* iPhone 15 Plus has more rounded corners */
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
+            margin: 0 auto;
+            border: 12px solid #000;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .phone-frame:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.2);
+        }
+        
+        .phone-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .screen-title {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .screen-description {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            max-width: 300px;
+            margin: 0 auto 20px;
+        }
+        
+        /* Dynamic Island style instead of notch */
+        .dynamic-island {
+            position: absolute;
+            width: 126px;
+            height: 37px;
+            background: #000;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 20px;
+            z-index: 10;
+        }
+        
+        /* iPhone 15 Plus side button */
+        .side-button {
+            position: absolute;
+            width: 4px;
+            height: 80px;
+            background: #222;
+            right: -16px;
+            top: 120px;
+            border-radius: 2px;
+        }
+        
+        /* iPhone 15 Plus volume buttons */
+        .volume-up {
+            position: absolute;
+            width: 4px;
+            height: 40px;
+            background: #222;
+            left: -16px;
+            top: 120px;
+            border-radius: 2px;
+        }
+        
+        .volume-down {
+            position: absolute;
+            width: 4px;
+            height: 40px;
+            background: #222;
+            left: -16px;
+            top: 170px;
+            border-radius: 2px;
+        }
+        
+        /* iPhone 15 Plus mute switch */
+        .mute-switch {
+            position: absolute;
+            width: 4px;
+            height: 20px;
+            background: #222;
+            left: -16px;
+            top: 80px;
+            border-radius: 2px;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            color: white;
+            padding: 60px 0 30px;
+            text-align: center;
+            border-radius: 0 0 50% 50% / 20px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.2);
+        }
+        
+        .page-title {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .page-subtitle {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .section-description {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto 60px;
+        }
+        
+        .feature-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .feature-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .feature-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1 class="page-title">拼多多类电商App原型设计</h1>
+        <p class="page-subtitle">
+            高保真UI设计，现代化界面，优化用户体验
+        </p>
+    </div>
+    
+    <div class="section-title">主要特点</div>
+    <p class="section-description">
+        这个电商App原型采用了现代化的UI设计和交互模式，提供了流畅的用户体验和直观的界面。
+        每个界面都经过精心设计，确保视觉美观和功能实用性的平衡。
+    </p>
+    
+    <div class="feature-list">
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-paint-brush"></i>
+            </div>
+            <h3 class="feature-title">现代UI设计</h3>
+            <p class="feature-description">
+                采用现代化的UI元素，包括圆角、阴影、渐变色等，创造出视觉上吸引人的界面。
+            </p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3 class="feature-title">移动优先</h3>
+            <p class="feature-description">
+                专为移动设备设计，确保在各种屏幕尺寸上都能提供最佳的用户体验。
+            </p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h3 class="feature-title">高效交互</h3>
+            <p class="feature-description">
+                精心设计的交互流程，让用户能够快速完成购物、支付等操作。
+            </p>
+        </div>
+    </div>
+    
+    <div class="section-title">界面展示</div>
+    
+    <div class="prototype-container">
+        <!-- 首页 -->
+        <div>
+            <h2 class="screen-title">首页</h2>
+            <p class="screen-description">展示推荐商品、活动和分类，吸引用户浏览和购买</p>
+            <div class="phone-frame">
+                <div class="dynamic-island"></div>
+                <div class="side-button"></div>
+                <div class="volume-up"></div>
+                <div class="volume-down"></div>
+                <div class="mute-switch"></div>
+                <iframe src="enhanced-home.html"></iframe>
+            </div>
+        </div>
+
+        <!-- 分类页 -->
+        <div>
+            <h2 class="screen-title">分类页</h2>
+            <p class="screen-description">展示商品分类，方便用户按类别浏览商品</p>
+            <div class="phone-frame">
+                <div class="dynamic-island"></div>
+                <div class="side-button"></div>
+                <div class="volume-up"></div>
+                <div class="volume-down"></div>
+                <div class="mute-switch"></div>
+                <iframe src="category.html"></iframe>
+            </div>
+        </div>
+
+        <!-- 商品详情页 -->
+        <div>
+            <h2 class="screen-title">商品详情页</h2>
+            <p class="screen-description">展示商品详细信息、规格选择和购买选项</p>
+            <div class="phone-frame">
+                <div class="dynamic-island"></div>
+                <div class="side-button"></div>
+                <div class="volume-up"></div>
+                <div class="volume-down"></div>
+                <div class="mute-switch"></div>
+                <iframe src="enhanced-product.html"></iframe>
+            </div>
+        </div>
+
+        <!-- 购物车 -->
+        <div>
+            <h2 class="screen-title">购物车</h2>
+            <p class="screen-description">管理已选商品，调整数量，计算总价</p>
+            <div class="phone-frame">
+                <div class="dynamic-island"></div>
+                <div class="side-button"></div>
+                <div class="volume-up"></div>
+                <div class="volume-down"></div>
+                <div class="mute-switch"></div>
+                <iframe src="cart.html"></iframe>
+            </div>
+        </div>
+
+        <!-- 订单确认页 -->
+        <div>
+            <h2 class="screen-title">订单确认页</h2>
+            <p class="screen-description">确认订单信息，选择配送方式和支付方式</p>
+            <div class="phone-frame">
+                <div class="dynamic-island"></div>
+                <div class="side-button"></div>
+                <div class="volume-up"></div>
+                <div class="volume-down"></div>
+                <div class="mute-switch"></div>
+                <iframe src="checkout.html"></iframe>
+            </div>
+        </div>
+
+        <!-- 支付页面 -->
+        <div>
+            <h2 class="screen-title">支付页面</h2>
+            <p class="screen-description">选择支付方式，完成订单支付</p>
+            <div class="phone-frame">
+                <div class="dynamic-island"></div>
+                <div class="side-button"></div>
+                <div class="volume-up"></div>
+                <div class="volume-down"></div>
+                <div class="mute-switch"></div>
+                <iframe src="payment.html"></iframe>
+            </div>
+        </div>
+
+        <!-- 订单列表 -->
+        <div>
+            <h2 class="screen-title">订单列表</h2>
+            <p class="screen-description">查看所有订单，按状态筛选，管理订单</p>
+            <div class="phone-frame">
+                <div class="dynamic-island"></div>
+                <div class="side-button"></div>
+                <div class="volume-up"></div>
+                <div class="volume-down"></div>
+                <div class="mute-switch"></div>
+                <iframe src="orders.html"></iframe>
+            </div>
+        </div>
+
+        <!-- 个人中心 -->
+        <div>
+            <h2 class="screen-title">个人中心</h2>
+            <p class="screen-description">用户信息、订单管理和个人设置</p>
+            <div class="phone-frame">
+                <div class="dynamic-island"></div>
+                <div class="side-button"></div>
+                <div class="volume-up"></div>
+                <div class="volume-down"></div>
+                <div class="mute-switch"></div>
+                <iframe src="enhanced-profile.html"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="mt-20 text-center text-gray-500 text-sm pb-10">
+        <p>© 2023 电商App原型设计 | 高保真UI设计</p>
+    </footer>
+</body>
+</html> 

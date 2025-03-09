@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 - 电商管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+        .sidebar {
+            background-color: #001529;
+            color: rgba(255, 255, 255, 0.65);
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .sidebar .logo {
+            height: 64px;
+            padding: 16px 24px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .sidebar .menu-item:hover {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .tab-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-item.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+        }
+        .tab-item:hover:not(.active) {
+            color: #40a9ff;
+        }
+        .settings-sidebar {
+            width: 220px;
+            position: sticky;
+            top: 20px;
+        }
+        .settings-content {
+            flex: 1;
+        }
+        .settings-menu-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            transition: all 0.3s;
+        }
+        .settings-menu-item:hover {
+            background-color: #f0f5ff;
+            color: #1890ff;
+        }
+        .settings-menu-item.active {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            font-weight: 500;
+        }
+        .settings-menu-item i {
+            width: 16px;
+            text-align: center;
+            margin-right: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #1890ff;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store mr-2"></i> 电商管理系统
+        </div>
+        <nav class="mt-4">
+            <div class="menu-item">
+                <i class="fas fa-tachometer-alt"></i> 首页仪表盘
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-shopping-cart"></i> 订单管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-box"></i> 商品管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-users"></i> 客户管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-bullhorn"></i> 营销活动
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-chart-bar"></i> 数据分析
+            </div>
+            <div class="menu-item active">
+                <i class="fas fa-cog"></i> 系统设置
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主要内容区 -->
+    <main class="content">
+        <!-- 顶部导航栏 -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">系统设置</h1>
+            <div class="flex items-center">
+                <div class="mr-4 relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">3</span>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                    <span class="text-gray-700">张经理</span>
+                    <i class="fas fa-chevron-down ml-2 text-gray-500 text-xs"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置内容 -->
+        <div class="flex gap-6">
+            <!-- 设置侧边栏菜单 -->
+            <div class="settings-sidebar card p-4">
+                <div class="settings-menu-item active">
+                    <i class="fas fa-store"></i> 店铺信息
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-user-cog"></i> 账号管理
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-users-cog"></i> 员工管理
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-truck"></i> 物流设置
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-wallet"></i> 支付设置
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-bell"></i> 通知设置
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-shield-alt"></i> 安全配置
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-code"></i> 接口配置
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-palette"></i> 主题设置
+                </div>
+                <div class="settings-menu-item">
+                    <i class="fas fa-history"></i> 操作日志
+                </div>
+            </div>
+
+            <!-- 设置内容区 -->
+            <div class="settings-content card p-6">
+                <h2 class="text-xl font-medium text-gray-800 mb-6">店铺信息</h2>
+                
+                <!-- 基本信息表单 -->
+                <form>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">店铺名称</label>
+                            <input type="text" value="品多多官方旗舰店" class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">经营类目</label>
+                            <select class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500 bg-white">
+                                <option>数码电子</option>
+                                <option>服装鞋包</option>
+                                <option>家居生活</option>
+                                <option>美妆个护</option>
+                                <option>食品饮料</option>
+                                <option>其他</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">联系电话</label>
+                            <input type="text" value="400-123-4567" class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">客服邮箱</label>
+                            <input type="email" value="service@example.com" class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">所在地区</label>
+                            <div class="flex gap-2">
+                                <select class="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500 bg-white">
+                                    <option>上海市</option>
+                                </select>
+                                <select class="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500 bg-white">
+                                    <option>浦东新区</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">详细地址</label>
+                            <input type="text" value="张江高科技园区科苑路88号" class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm text-gray-600 mb-2">店铺简介</label>
+                            <textarea rows="4" class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">品多多官方旗舰店，提供优质数码产品和服务，满足您的各种需求。我们的目标是为每位顾客提供最好的购物体验和售后服务。</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">营业执照</label>
+                            <div class="flex items-center">
+                                <img src="https://via.placeholder.com/100x140" alt="营业执照" class="w-24 h-32 object-cover border mr-4">
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">上传图片</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">店铺Logo</label>
+                            <div class="flex items-center">
+                                <img src="https://via.placeholder.com/100" alt="店铺Logo" class="w-20 h-20 object-cover border rounded-lg mr-4">
+                                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">上传图片</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-medium text-gray-800 mb-4 border-b pb-2">店铺设置</h3>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">自动上架商品</div>
+                                <div class="text-sm text-gray-500">商品审核通过后自动上架</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">自动确认收货</div>
+                                <div class="text-sm text-gray-500">订单发货后15天自动确认收货</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">库存预警</div>
+                                <div class="text-sm text-gray-500">商品库存低于阈值时发送通知</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">订单通知</div>
+                                <div class="text-sm text-gray-500">新订单自动推送通知</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">评价回复提醒</div>
+                                <div class="text-sm text-gray-500">收到新的评价时推送通知</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <div class="font-medium">自动回复客服消息</div>
+                                <div class="text-sm text-gray-500">非工作时间自动回复客服消息</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <h3 class="text-lg font-medium text-gray-800 mb-4 border-b pb-2">营业时间</h3>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">营业模式</label>
+                            <div class="flex gap-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="business_mode" class="form-radio text-blue-500" checked>
+                                    <span class="ml-2">全天营业</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="business_mode" class="form-radio text-blue-500">
+                                    <span class="ml-2">自定义时间</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">客服在线时间</label>
+                            <div class="flex gap-2 items-center">
+                                <input type="time" value="09:00" class="border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                                <span>至</span>
+                                <input type="time" value="18:00" class="border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" class="bg-gray-100 text-gray-700 px-4 py-2 rounded hover:bg-gray-200">取消</button>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">保存设置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 

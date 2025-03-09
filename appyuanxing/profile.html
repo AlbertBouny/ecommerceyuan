@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 拼多多类电商App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 个人中心页面特定样式 */
+        .profile-header {
+            background: linear-gradient(to right, #e02e24, #ff6e26);
+            color: white;
+            padding: 20px 15px;
+            position: relative;
+        }
+        
+        .profile-settings {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .profile-user {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin-right: 15px;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .profile-level {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            margin-top: 15px;
+        }
+        
+        .profile-stat {
+            flex: 1;
+            text-align: center;
+            padding: 5px 0;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .profile-stat:last-child {
+            border-right: none;
+        }
+        
+        .profile-stat-value {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .profile-stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        .profile-section {
+            background-color: white;
+            margin-bottom: 10px;
+        }
+        
+        .profile-section-title {
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .profile-orders {
+            display: flex;
+            padding: 15px 0;
+        }
+        
+        .profile-order-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .profile-order-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+        
+        .profile-order-label {
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .profile-order-badge {
+            position: absolute;
+            top: -5px;
+            right: 50%;
+            transform: translateX(12px);
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 10px;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+        
+        .profile-menu {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .profile-menu-item {
+            width: 25%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .profile-menu-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-size: 20px;
+        }
+        
+        .profile-menu-label {
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .profile-list {
+            padding: 0 15px;
+        }
+        
+        .profile-list-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .profile-list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .profile-list-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .profile-list-label {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .profile-list-arrow {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .profile-wallet {
+            display: flex;
+            padding: 15px;
+        }
+        
+        .profile-wallet-item {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .profile-wallet-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .profile-wallet-label {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="status-bar-time">9:41</div>
+        <div class="status-bar-icons">
+            <i class="fas fa-signal"></i>
+            <i class="fas fa-wifi"></i>
+            <i class="fas fa-battery-full"></i>
+        </div>
+    </div>
+    
+    <!-- 个人中心头部 -->
+    <div class="profile-header">
+        <div class="profile-settings">
+            <i class="fas fa-cog"></i>
+        </div>
+        
+        <div class="profile-user">
+            <div class="profile-avatar">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像">
+            </div>
+            <div class="profile-info">
+                <div class="profile-name">张先生</div>
+                <div class="profile-level">普通会员</div>
+                <div>ID: 12345678</div>
+            </div>
+        </div>
+        
+        <div class="profile-stats">
+            <div class="profile-stat">
+                <div class="profile-stat-value">32</div>
+                <div class="profile-stat-label">收藏夹</div>
+            </div>
+            <div class="profile-stat">
+                <div class="profile-stat-value">128</div>
+                <div class="profile-stat-label">关注店铺</div>
+            </div>
+            <div class="profile-stat">
+                <div class="profile-stat-value">256</div>
+                <div class="profile-stat-label">浏览记录</div>
+            </div>
+            <div class="profile-stat">
+                <div class="profile-stat-value">8</div>
+                <div class="profile-stat-label">粉丝</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 我的订单 -->
+    <div class="profile-section">
+        <div class="profile-section-title">
+            我的订单
+            <span style="float: right; font-size: 14px; font-weight: normal; color: #999;">
+                查看全部订单 <i class="fas fa-chevron-right"></i>
+            </span>
+        </div>
+        
+        <div class="profile-orders">
+            <div class="profile-order-item">
+                <div class="profile-order-icon">
+                    <i class="fas fa-wallet"></i>
+                </div>
+                <div class="profile-order-label">待付款</div>
+                <div class="profile-order-badge">2</div>
+            </div>
+            <div class="profile-order-item">
+                <div class="profile-order-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="profile-order-label">待发货</div>
+                <div class="profile-order-badge">1</div>
+            </div>
+            <div class="profile-order-item">
+                <div class="profile-order-icon">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <div class="profile-order-label">待收货</div>
+            </div>
+            <div class="profile-order-item">
+                <div class="profile-order-icon">
+                    <i class="fas fa-comment-alt"></i>
+                </div>
+                <div class="profile-order-label">待评价</div>
+                <div class="profile-order-badge">3</div>
+            </div>
+            <div class="profile-order-item">
+                <div class="profile-order-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <div class="profile-order-label">退款/售后</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 我的钱包 -->
+    <div class="profile-section">
+        <div class="profile-section-title">
+            我的钱包
+            <span style="float: right; font-size: 14px; font-weight: normal; color: #999;">
+                查看详情 <i class="fas fa-chevron-right"></i>
+            </span>
+        </div>
+        
+        <div class="profile-wallet">
+            <div class="profile-wallet-item">
+                <div class="profile-wallet-value">¥88.50</div>
+                <div class="profile-wallet-label">余额</div>
+            </div>
+            <div class="profile-wallet-item">
+                <div class="profile-wallet-value">3</div>
+                <div class="profile-wallet-label">优惠券</div>
+            </div>
+            <div class="profile-wallet-item">
+                <div class="profile-wallet-value">520</div>
+                <div class="profile-wallet-label">积分</div>
+            </div>
+            <div class="profile-wallet-item">
+                <div class="profile-wallet-value">¥10</div>
+                <div class="profile-wallet-label">红包</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 常用功能 -->
+    <div class="profile-section">
+        <div class="profile-section-title">常用功能</div>
+        
+        <div class="profile-menu">
+            <div class="profile-menu-item">
+                <div class="profile-menu-icon">
+                    <i class="fas fa-user-friends"></i>
+                </div>
+                <div class="profile-menu-label">邀请好友</div>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-icon">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <div class="profile-menu-label">领券中心</div>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="profile-menu-label">收货地址</div>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="profile-menu-label">客服中心</div>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-icon">
+                    <i class="fas fa-store"></i>
+                </div>
+                <div class="profile-menu-label">商家入驻</div>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="profile-menu-label">我的收藏</div>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="profile-menu-label">浏览历史</div>
+            </div>
+            <div class="profile-menu-item">
+                <div class="profile-menu-icon">
+                    <i class="fas fa-ellipsis-h"></i>
+                </div>
+                <div class="profile-menu-label">更多服务</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 其他设置 -->
+    <div class="profile-section">
+        <div class="profile-list">
+            <div class="profile-list-item">
+                <div class="profile-list-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="profile-list-label">账号安全</div>
+                <div class="profile-list-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <div class="profile-list-item">
+                <div class="profile-list-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="profile-list-label">消息通知</div>
+                <div class="profile-list-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <div class="profile-list-item">
+                <div class="profile-list-icon">
+                    <i class="fas fa-question-circle"></i>
+                </div>
+                <div class="profile-list-label">帮助中心</div>
+                <div class="profile-list-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            <div class="profile-list-item">
+                <div class="profile-list-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <div class="profile-list-label">关于我们</div>
+                <div class="profile-list-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <a href="#" class="tab-item">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-th-large"></i>
+            <span>分类</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-fire"></i>
+            <span>发现</span>
+        </a>
+        <a href="#" class="tab-item">
+            <i class="fas fa-shopping-cart"></i>
+            <span>购物车</span>
+        </a>
+        <a href="#" class="tab-item active">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </a>
+    </div>
+</body>
+</html> 

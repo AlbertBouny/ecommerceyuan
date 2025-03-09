@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理 - 电商管理后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+        .sidebar {
+            background-color: #001529;
+            color: rgba(255, 255, 255, 0.65);
+            width: 220px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+        }
+        .sidebar .logo {
+            height: 64px;
+            padding: 16px 24px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .menu-item {
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .sidebar .menu-item:hover {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item.active {
+            background-color: #1890ff;
+            color: white;
+        }
+        .sidebar .menu-item i {
+            margin-right: 10px;
+            width: 16px;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .order-status {
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-pending {
+            background-color: #ffe58f;
+            color: #ad6800;
+        }
+        .status-processing {
+            background-color: #91caff;
+            color: #003eb3;
+        }
+        .status-shipped {
+            background-color: #b7eb8f;
+            color: #135200;
+        }
+        .status-completed {
+            background-color: #d9f7be;
+            color: #237804;
+        }
+        .status-cancelled {
+            background-color: #ffccc7;
+            color: #a8071a;
+        }
+        .status-refunded {
+            background-color: #d9d9d9;
+            color: #434343;
+        }
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .tab-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab-item.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+        }
+        .tab-item:hover:not(.active) {
+            color: #40a9ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="logo">
+            <i class="fas fa-store mr-2"></i> 电商管理系统
+        </div>
+        <nav class="mt-4">
+            <div class="menu-item">
+                <i class="fas fa-tachometer-alt"></i> 首页仪表盘
+            </div>
+            <div class="menu-item active">
+                <i class="fas fa-shopping-cart"></i> 订单管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-box"></i> 商品管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-users"></i> 客户管理
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-bullhorn"></i> 营销活动
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-chart-bar"></i> 数据分析
+            </div>
+            <div class="menu-item">
+                <i class="fas fa-cog"></i> 系统设置
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 主要内容区 -->
+    <main class="content">
+        <!-- 顶部导航栏 -->
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">订单管理</h1>
+            <div class="flex items-center">
+                <div class="mr-4 relative">
+                    <i class="fas fa-bell text-gray-600 text-xl"></i>
+                    <span class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">3</span>
+                </div>
+                <div class="flex items-center">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="用户头像" class="w-8 h-8 rounded-full mr-2">
+                    <span class="text-gray-700">张经理</span>
+                    <i class="fas fa-chevron-down ml-2 text-gray-500 text-xs"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 订单统计卡片 -->
+        <div class="grid grid-cols-6 gap-6 mb-6">
+            <div class="card p-4 text-center">
+                <div class="text-gray-500 mb-2">全部订单</div>
+                <div class="text-2xl font-bold text-gray-800">248</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="text-gray-500 mb-2">待付款</div>
+                <div class="text-2xl font-bold text-yellow-500">26</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="text-gray-500 mb-2">待发货</div>
+                <div class="text-2xl font-bold text-blue-500">38</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="text-gray-500 mb-2">已发货</div>
+                <div class="text-2xl font-bold text-green-500">45</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="text-gray-500 mb-2">退款/售后</div>
+                <div class="text-2xl font-bold text-red-500">12</div>
+            </div>
+            <div class="card p-4 text-center">
+                <div class="text-gray-500 mb-2">已完成</div>
+                <div class="text-2xl font-bold text-gray-600">127</div>
+            </div>
+        </div>
+
+        <!-- 订单标签页 -->
+        <div class="card mb-6">
+            <div class="flex border-b">
+                <div class="tab-item active font-medium">全部订单</div>
+                <div class="tab-item font-medium">待付款</div>
+                <div class="tab-item font-medium">待发货</div>
+                <div class="tab-item font-medium">已发货</div>
+                <div class="tab-item font-medium">已完成</div>
+                <div class="tab-item font-medium">已取消</div>
+                <div class="tab-item font-medium">退款/售后</div>
+            </div>
+        </div>
+
+        <!-- 订单搜索和筛选 -->
+        <div class="card p-4 mb-6">
+            <div class="grid grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">订单号</label>
+                    <input type="text" placeholder="请输入订单号" class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">客户信息</label>
+                    <input type="text" placeholder="姓名/手机号" class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">订单状态</label>
+                    <select class="w-full border rounded px-3 py-2 focus:outline-none focus:border-blue-500 bg-white">
+                        <option value="">全部状态</option>
+                        <option value="pending">待付款</option>
+                        <option value="processing">待发货</option>
+                        <option value="shipped">已发货</option>
+                        <option value="completed">已完成</option>
+                        <option value="cancelled">已取消</option>
+                        <option value="refunded">已退款</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-1">下单时间</label>
+                    <div class="flex items-center space-x-2">
+                        <input type="date" class="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                        <span class="text-gray-500">至</span>
+                        <input type="date" class="flex-1 border rounded px-3 py-2 focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4 flex justify-end">
+                <button class="bg-gray-100 text-gray-700 px-4 py-2 rounded mr-2 hover:bg-gray-200">重置</button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">搜索</button>
+            </div>
+        </div>
+
+        <!-- 订单表格 -->
+        <div class="card p-4 mb-6">
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-sm leading-normal">
+                            <th class="py-3 px-4 text-left">订单号</th>
+                            <th class="py-3 px-4 text-left">客户信息</th>
+                            <th class="py-3 px-4 text-left">商品信息</th>
+                            <th class="py-3 px-4 text-left">金额</th>
+                            <th class="py-3 px-4 text-left">订单状态</th>
+                            <th class="py-3 px-4 text-left">付款方式</th>
+                            <th class="py-3 px-4 text-left">下单时间</th>
+                            <th class="py-3 px-4 text-left">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm">
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">OD20230518001</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="客户头像" class="avatar mr-2">
+                                    <div>
+                                        <div>王小明</div>
+                                        <div class="text-gray-400">138****5678</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div>时尚帆布双肩包</div>
+                                <div class="text-gray-400">颜色: 藏青色 | 数量: 1</div>
+                            </td>
+                            <td class="py-3 px-4">¥269.00</td>
+                            <td class="py-3 px-4"><span class="order-status status-pending">待付款</span></td>
+                            <td class="py-3 px-4">微信支付</td>
+                            <td class="py-3 px-4">2023-05-18 14:23</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">详情</button>
+                                <button class="text-red-500 hover:text-red-700">取消</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">OD20230518002</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/men/46.jpg" alt="客户头像" class="avatar mr-2">
+                                    <div>
+                                        <div>李强</div>
+                                        <div class="text-gray-400">139****1234</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div>智能手环 x2</div>
+                                <div class="text-gray-400">颜色: 黑色 | 数量: 2</div>
+                            </td>
+                            <td class="py-3 px-4">¥598.00</td>
+                            <td class="py-3 px-4"><span class="order-status status-processing">待发货</span></td>
+                            <td class="py-3 px-4">支付宝</td>
+                            <td class="py-3 px-4">2023-05-18 12:05</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">详情</button>
+                                <button class="text-green-500 hover:text-green-700">发货</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">OD20230518003</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="客户头像" class="avatar mr-2">
+                                    <div>
+                                        <div>张丽</div>
+                                        <div class="text-gray-400">135****7890</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div>防晒霜 SPF50 x3</div>
+                                <div class="text-gray-400">规格: 50ml | 数量: 3</div>
+                            </td>
+                            <td class="py-3 px-4">¥327.00</td>
+                            <td class="py-3 px-4"><span class="order-status status-shipped">已发货</span></td>
+                            <td class="py-3 px-4">微信支付</td>
+                            <td class="py-3 px-4">2023-05-18 10:38</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">详情</button>
+                                <button class="text-blue-500 hover:text-blue-700">物流</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">OD20230517001</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="客户头像" class="avatar mr-2">
+                                    <div>
+                                        <div>陈伟</div>
+                                        <div class="text-gray-400">133****4321</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div>无线蓝牙耳机</div>
+                                <div class="text-gray-400">颜色: 白色 | 数量: 1</div>
+                            </td>
+                            <td class="py-3 px-4">¥499.00</td>
+                            <td class="py-3 px-4"><span class="order-status status-completed">已完成</span></td>
+                            <td class="py-3 px-4">支付宝</td>
+                            <td class="py-3 px-4">2023-05-17 16:42</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">详情</button>
+                                <button class="text-blue-500 hover:text-blue-700">评价</button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-4">OD20230517002</td>
+                            <td class="py-3 px-4">
+                                <div class="flex items-center">
+                                    <img src="https://randomuser.me/api/portraits/women/29.jpg" alt="客户头像" class="avatar mr-2">
+                                    <div>
+                                        <div>林小红</div>
+                                        <div class="text-gray-400">137****2468</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-3 px-4">
+                                <div>儿童益智拼图</div>
+                                <div class="text-gray-400">类型: 动物系列 | 数量: 2</div>
+                            </td>
+                            <td class="py-3 px-4">¥158.00</td>
+                            <td class="py-3 px-4"><span class="order-status status-refunded">已退款</span></td>
+                            <td class="py-3 px-4">微信支付</td>
+                            <td class="py-3 px-4">2023-05-17 09:15</td>
+                            <td class="py-3 px-4">
+                                <button class="text-blue-500 hover:text-blue-700 mr-2">详情</button>
+                                <button class="text-gray-500 hover:text-gray-700">归档</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 分页 -->
+            <div class="mt-4 flex justify-between items-center">
+                <div class="text-gray-500 text-sm">
+                    共 248 条记录，每页显示 10 条
+                </div>
+                <div class="flex">
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 bg-gray-100">上一页</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-white bg-blue-500">1</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 hover:bg-gray-100">2</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 hover:bg-gray-100">3</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 hover:bg-gray-100">4</button>
+                    <button class="border rounded px-3 py-1 mr-2 text-gray-600 hover:bg-gray-100">5</button>
+                    <button class="border rounded px-3 py-1 text-gray-600 hover:bg-gray-100">下一页</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 

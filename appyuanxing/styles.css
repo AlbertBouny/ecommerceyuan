@@ -1,0 +1,334 @@
+/* 基础样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --primary-color: #e02e24;
+    --secondary-color: #ff6e26;
+    --background-color: #f8f8f8;
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --price-color: #ff5000;
+    --discount-color: #ff5000;
+    --border-color: #eeeeee;
+    --placeholder-color: #cccccc;
+    --button-color: #ff5000;
+    --button-text: #ffffff;
+    --tag-background: #fff1e8;
+    --tag-text: #ff5000;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.5;
+    font-size: 14px;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* 状态栏 */
+.status-bar {
+    height: 44px;
+    width: 100%;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.status-bar-time {
+    font-weight: 600;
+}
+
+.status-bar-icons {
+    display: flex;
+    align-items: center;
+}
+
+.status-bar-icons i {
+    margin-left: 5px;
+}
+
+/* 底部导航栏 */
+.tab-bar {
+    height: 60px;
+    width: 100%;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    border-top: 1px solid var(--border-color);
+}
+
+.tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    color: #999999;
+    text-decoration: none;
+}
+
+.tab-item.active {
+    color: var(--primary-color);
+}
+
+.tab-item i {
+    font-size: 22px;
+    margin-bottom: 2px;
+}
+
+.tab-item span {
+    font-size: 10px;
+}
+
+/* 内容区域 */
+.content {
+    padding-bottom: 60px; /* 为底部导航栏留出空间 */
+    min-height: calc(100vh - 104px); /* 状态栏 + 底部导航栏的高度 */
+    width: 100%;
+}
+
+/* 商品卡片 */
+.product-card {
+    background-color: var(--card-background);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 10px;
+}
+
+.product-image {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: 8px;
+}
+
+.product-title {
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 5px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.product-price {
+    color: var(--price-color);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.product-price small {
+    font-size: 12px;
+    font-weight: normal;
+}
+
+.product-original-price {
+    color: #999;
+    font-size: 12px;
+    text-decoration: line-through;
+    margin-left: 5px;
+}
+
+.product-sales {
+    color: #999;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--button-color);
+    color: var(--button-text);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--button-color);
+    border: 1px solid var(--button-color);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+/* 标签样式 */
+.tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    background-color: var(--tag-background);
+    color: var(--tag-text);
+    margin-right: 5px;
+}
+
+/* 分割线 */
+.divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 10px 0;
+}
+
+/* 搜索框 */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #f1f1f1;
+    border-radius: 16px;
+    padding: 8px 12px;
+    margin: 8px 16px;
+}
+
+.search-bar i {
+    color: #999;
+    margin-right: 8px;
+}
+
+.search-input {
+    border: none;
+    background: transparent;
+    flex: 1;
+    outline: none;
+    font-size: 14px;
+}
+
+/* 拼团标签 */
+.group-buy-tag {
+    background-color: #ff5000;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin-right: 5px;
+}
+
+/* 倒计时 */
+.countdown {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    color: #ff5000;
+}
+
+.countdown-item {
+    background-color: #ff5000;
+    color: white;
+    padding: 1px 3px;
+    border-radius: 2px;
+    margin: 0 2px;
+}
+
+/* 用户头像 */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 加载更多 */
+.load-more {
+    text-align: center;
+    padding: 15px 0;
+    color: #999;
+    font-size: 12px;
+}
+
+/* 弹窗 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    border-radius: 12px;
+    width: 80%;
+    max-width: 300px;
+    padding: 20px;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+    width: 0;
+    background: transparent;
+} 

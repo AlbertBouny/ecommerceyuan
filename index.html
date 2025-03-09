@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商管理后台 - 原型展示</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .page-container {
+            width: 100%;
+            height: 700px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .page-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .page-title {
+            background: #fff;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+    </style>
+</head>
+<body class="p-6">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">电商管理后台原型</h1>
+        <p class="text-gray-600 mt-2">以下是电商PC端后台管理系统的所有页面原型</p>
+    </header>
+    
+    <main class="grid grid-cols-1 gap-12">
+        <!-- 首页/仪表盘 -->
+        <section>
+            <div class="page-title p-3 mb-1">
+                <h2 class="text-xl font-semibold text-gray-800">首页仪表盘</h2>
+                <p class="text-sm text-gray-600">整体业务概览与关键指标</p>
+            </div>
+            <div class="page-container">
+                <iframe src="home.html" title="首页仪表盘"></iframe>
+            </div>
+        </section>
+        
+        <!-- 订单管理 -->
+        <section>
+            <div class="page-title p-3 mb-1">
+                <h2 class="text-xl font-semibold text-gray-800">订单管理</h2>
+                <p class="text-sm text-gray-600">订单列表、详情与处理流程</p>
+            </div>
+            <div class="page-container">
+                <iframe src="orders.html" title="订单管理"></iframe>
+            </div>
+        </section>
+        
+        <!-- 商品管理 -->
+        <section>
+            <div class="page-title p-3 mb-1">
+                <h2 class="text-xl font-semibold text-gray-800">商品管理</h2>
+                <p class="text-sm text-gray-600">商品列表、添加与编辑</p>
+            </div>
+            <div class="page-container">
+                <iframe src="products.html" title="商品管理"></iframe>
+            </div>
+        </section>
+        
+        <!-- 客户管理 -->
+        <section>
+            <div class="page-title p-3 mb-1">
+                <h2 class="text-xl font-semibold text-gray-800">客户管理</h2>
+                <p class="text-sm text-gray-600">客户列表、详情与沟通记录</p>
+            </div>
+            <div class="page-container">
+                <iframe src="customers.html" title="客户管理"></iframe>
+            </div>
+        </section>
+        
+        <!-- 营销活动 -->
+        <section>
+            <div class="page-title p-3 mb-1">
+                <h2 class="text-xl font-semibold text-gray-800">营销活动</h2>
+                <p class="text-sm text-gray-600">优惠券、促销活动设置</p>
+            </div>
+            <div class="page-container">
+                <iframe src="marketing.html" title="营销活动"></iframe>
+            </div>
+        </section>
+        
+        <!-- 数据分析 -->
+        <section>
+            <div class="page-title p-3 mb-1">
+                <h2 class="text-xl font-semibold text-gray-800">数据分析</h2>
+                <p class="text-sm text-gray-600">销售报表、流量分析、转化率</p>
+            </div>
+            <div class="page-container">
+                <iframe src="analytics.html" title="数据分析"></iframe>
+            </div>
+        </section>
+        
+        <!-- 系统设置 -->
+        <section>
+            <div class="page-title p-3 mb-1">
+                <h2 class="text-xl font-semibold text-gray-800">系统设置</h2>
+                <p class="text-sm text-gray-600">账户设置、权限与店铺配置</p>
+            </div>
+            <div class="page-container">
+                <iframe src="settings.html" title="系统设置"></iframe>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="mt-12 text-center text-gray-500 text-sm">
+        <p>电商管理后台原型设计 © 2023</p>
+    </footer>
+</body>
+</html> 

@@ -371,11 +371,12 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 50px;
+            height: 55px;
             background-color: #fff;
             display: flex;
             border-top: 1px solid #f2f2f2;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         
         .tab-item {
@@ -384,8 +385,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #666;
-            font-size: 11px;
+            color: #999;
+            font-size: 12px;
             text-decoration: none;
         }
         
@@ -394,107 +395,20 @@
         }
         
         .tab-item i {
-            font-size: 22px;
-            margin-bottom: 2px;
-        }
-        
-        .tab-badge {
-            position: absolute;
-            top: 5px;
-            right: 50%;
-            transform: translateX(10px);
-            background-color: #e02e24;
-            color: #fff;
-            border-radius: 10px;
-            font-size: 10px;
-            padding: 0 4px;
-            min-width: 14px;
-            height: 14px;
-            text-align: center;
-            line-height: 14px;
-        }
-        
-        /* 底部填充 */
-        .bottom-padding {
-            height: 60px;
-        }
-        
-        /* 商品详情页按钮样式 */
-        .product-action-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background-color: #fff;
-            display: flex;
-            border-top: 1px solid #f2f2f2;
-            padding: 8px 10px;
-            z-index: 200;
-        }
-        
-        .product-action-icons {
-            display: flex;
-            width: 30%;
-        }
-        
-        .product-icon-btn {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #666;
-            font-size: 11px;
-            text-decoration: none;
-        }
-        
-        .product-icon-btn i {
             font-size: 20px;
-            margin-bottom: 2px;
+            margin-bottom: 3px;
         }
         
-        .product-action-btns {
-            display: flex;
-            width: 70%;
-            gap: 10px;
-        }
-        
-        .add-to-cart-btn {
-            flex: 1;
-            background: linear-gradient(135deg, #ff9900, #ff6600);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .buy-now-btn {
-            flex: 1;
-            background: linear-gradient(135deg, #ff4a4a, #ff0066);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* 底部填充，确保内容不被底部按钮遮挡 */
-        .product-detail-padding {
-            height: 80px;
+        /* 为底部导航添加足够的底部填充 */
+        .page-container {
+            padding-bottom: 70px;
         }
     </style>
 </head>
 <body>
+    <!-- 页面容器，添加底部填充 -->
+    <div class="page-container">
+    
     <!-- 首页头部 -->
     <div class="home-header">
         <!-- 状态栏 -->
@@ -704,31 +618,18 @@
         </div>
     </div>
     
-    <!-- 商品详情页按钮示例 -->
-    <!-- 注意：这个部分通常在商品详情页显示，这里仅作示例 -->
-    <div class="product-action-bar">
-        <div class="product-action-icons">
-            <a href="#" class="product-icon-btn">
-                <i class="fas fa-store"></i>
-                <span>店铺</span>
-            </a>
-            <a href="#" class="product-icon-btn">
-                <i class="far fa-heart"></i>
-                <span>收藏</span>
-            </a>
-            <a href="#" class="product-icon-btn">
-                <i class="fas fa-shopping-cart"></i>
-                <span>购物车</span>
-            </a>
-        </div>
-        <div class="product-action-btns">
-            <button class="add-to-cart-btn">加入购物车</button>
-            <button class="buy-now-btn">立即购买</button>
+    <!-- 最后一个促销商品 -->
+    <div class="flash-sale-item">
+        <img src="https://images.unsplash.com/photo-1605812811931-2bdb73b1adee?q=80&w=100&auto=format&fit=crop" alt="促销商品" class="product-img">
+        <div class="product-info">
+            <div class="product-title">女夏季短袖衬衫20</div>
+            <div class="product-price-sales">
+                <div class="product-price"><small>¥</small>24.01</div>
+            </div>
+            <div class="product-sales">已抢37件</div>
         </div>
     </div>
-    
-    <!-- 底部填充 -->
-    <div class="product-detail-padding"></div>
+    </div>
     
     <!-- 底部导航栏 -->
     <div class="tab-bar">

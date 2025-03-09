@@ -1,11 +1,558 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0;url=/dianshanghoutai/index.html">
-  <title>电商管理后台原型</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电商系统原型综合展示</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        .header-gradient {
+            background: linear-gradient(135deg, #4a6cf7, #7265e3);
+            color: white;
+            padding: 50px 0 30px;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            background: linear-gradient(to right, #4a6cf7, #7265e3);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* 移动端原型展示样式 */
+        .phone-frame {
+            width: 375px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+            position: relative;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .phone-frame:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            border-color: #bbb;
+        }
+        
+        .phone-frame iframe {
+            width: 100%;
+            border: none;
+        }
+        
+        /* 为不同页面设置不同高度 */
+        .cart-frame iframe, .checkout-frame iframe, .payment-frame iframe {
+            height: 1100px;
+        }
+        
+        .profile-frame iframe {
+            height: 1400px;
+        }
+        
+        .order-detail-frame iframe {
+            height: 1500px;
+        }
+        
+        .orders-frame iframe {
+            height: 1700px;
+        }
+        
+        .category-frame iframe {
+            height: 900px;
+        }
+        
+        .product-frame iframe {
+            height: 2100px;
+        }
+        
+        .home-frame iframe {
+            height: 1500px;
+        }
+        
+        /* 为移动端页面添加容器样式 */
+        .app-page-container {
+            margin-bottom: 40px;
+            transition: transform 0.3s ease;
+        }
+        
+        .app-page-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* 移动端页面截图样式 */
+        .app-screenshot {
+            border-radius: 0;
+            width: 100%;
+        }
+        
+        /* 填充缺失图片的容器样式 */
+        .placeholder-img {
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 16px;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            border-radius: 12px;
+            border: 1px dashed #ccc;
+            flex-direction: column;
+        }
+        
+        .placeholder-img::before {
+            content: "\f03e";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 400;
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+        
+        /* PC端后台原型展示样式 */
+        .desktop-frame {
+            width: 100%;
+            height: 1200px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .desktop-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            transform-origin: top left;
+            transform: scale(0.95);
+        }
+        
+        /* 添加专门针对数据分析页面的高度设置，因为这个页面通常有更多图表 */
+        .analytics-frame {
+            height: 2000px;
+        }
+        
+        /* 为首页仪表盘增加高度 */
+        .dashboard-frame {
+            height: 1800px;
+        }
+        
+        /* 为系统设置页面增加高度 */
+        .settings-frame {
+            height: 1600px;
+        }
+        
+        /* 为商品管理页面增加高度 */
+        .products-frame {
+            height: 1350px;
+        }
+        
+        /* 减少订单管理页面高度 */
+        .orders-frame {
+            height: 1000px;
+        }
+        
+        /* 减少营销活动页面高度 */
+        .marketing-frame {
+            height: 1000px;
+        }
+        
+        /* 添加页面间隔，使界面更加清晰 */
+        .backend-page-container {
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        
+        .backend-page-container:last-child {
+            border-bottom: none;
+        }
+        
+        /* 商家App框架样式 */
+        .merchant-app-frame {
+            width: 375px;
+            height: 700px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+            position: relative;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .merchant-app-frame:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            border-color: #bbb;
+        }
+        
+        .merchant-app-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* 为不同页面设置不同高度 */
+        .dashboard-merchant-frame {
+            height: 800px;
+        }
+        
+        .messages-merchant-frame {
+            height: 800px;
+        }
+        
+        .profile-merchant-frame {
+            height: 850px;
+        }
+        
+        .orders-merchant-frame {
+            height: 750px;
+        }
+        
+        .order-detail-merchant-frame {
+            height: 800px;
+        }
+        
+        .login-merchant-frame {
+            height: 700px;
+        }
+        
+        .shipping-merchant-frame {
+            height: 700px;
+        }
+        
+        .products-merchant-frame {
+            height: 750px;
+        }
+    </style>
 </head>
 <body>
-  <p>如果没有自动跳转，请<a href="/dianshanghoutai/index.html">点击这里</a></p>
+    <!-- 头部 -->
+    <header class="header-gradient">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold text-center mb-2">电商系统原型展示</h1>
+            <p class="text-xl opacity-90 text-center">包含移动端电商App和PC端管理后台的所有页面</p>
+        </div>
+    </header>
+    
+    <div class="container mx-auto px-4 py-10">
+        <!-- 移动端电商App部分 -->
+        <div class="section-header mb-8">
+            <h2 class="text-2xl font-bold">拼多多类电商App原型</h2>
+            <p class="text-white mt-2 text-sm">根据页面内容设置合适的高度</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16">
+            <!-- 首页 (增强版) -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">首页</h3>
+                <div class="phone-frame home-frame">
+                    <iframe src="appyuanxing/enhanced-home.html" scrolling="no" style="height:1500px;"></iframe>
+                </div>
+            </div>
+            
+            <!-- 分类页 -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">分类页</h3>
+                <div class="phone-frame category-frame">
+                    <iframe src="appyuanxing/category.html" scrolling="no" style="height:900px;"></iframe>
+                </div>
+            </div>
+            
+            <!-- 商品详情 (增强版) -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">商品详情</h3>
+                <div class="phone-frame product-frame">
+                    <iframe src="appyuanxing/enhanced-product.html" scrolling="no" style="height:2100px;"></iframe>
+                </div>
+            </div>
+            
+            <!-- 购物车 -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">购物车</h3>
+                <div class="phone-frame cart-frame">
+                    <iframe src="appyuanxing/cart.html" scrolling="no" style="height:1100px;"></iframe>
+                </div>
+            </div>
+            
+            <!-- 结算页面 -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">结算页面</h3>
+                <div class="phone-frame checkout-frame">
+                    <iframe src="appyuanxing/checkout.html" scrolling="no" style="height:1100px;"></iframe>
+                </div>
+            </div>
+            
+            <!-- 支付页面 -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">支付页面</h3>
+                <div class="phone-frame payment-frame">
+                    <iframe src="appyuanxing/payment.html" scrolling="no" style="height:1100px;"></iframe>
+                </div>
+            </div>
+            
+            <!-- 订单列表 -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">订单列表</h3>
+                <div class="phone-frame orders-frame">
+                    <iframe src="appyuanxing/orders.html" scrolling="no" style="height:1700px;"></iframe>
+                </div>
+            </div>
+            
+            <!-- 订单详情 (新增页面) -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">订单详情</h3>
+                <div class="phone-frame order-detail-frame">
+                    <iframe src="appyuanxing/order-detail.html" scrolling="no" style="height:1500px;"></iframe>
+                </div>
+            </div>
+            
+            <!-- 个人中心 (增强版) -->
+            <div class="app-page-container">
+                <h3 class="text-xl font-semibold text-center mb-3">个人中心</h3>
+                <div class="phone-frame profile-frame">
+                    <iframe src="appyuanxing/enhanced-profile.html" scrolling="no" style="height:1400px;"></iframe>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PC端后台管理系统部分 -->
+        <div class="section-header mb-8">
+            <h2 class="text-2xl font-bold">电商后台管理系统原型</h2>
+            <p class="text-white mt-2 text-sm">完整展示所有页面内容，无需滚动查看</p>
+        </div>
+        
+        <div class="grid grid-cols-1 gap-8">
+            <!-- 首页仪表盘 -->
+            <div class="card p-4 backend-page-container">
+                <h3 class="text-xl font-semibold mb-3">首页仪表盘</h3>
+                <p class="text-gray-600 mb-4">整体业务概览与关键指标</p>
+                <div class="desktop-frame dashboard-frame">
+                    <iframe src="dianshanghoutai/home.html"></iframe>
+                </div>
+            </div>
+            
+            <!-- 订单管理 -->
+            <div class="card p-4 backend-page-container">
+                <h3 class="text-xl font-semibold mb-3">订单管理</h3>
+                <p class="text-gray-600 mb-4">订单列表、详情与处理流程</p>
+                <div class="desktop-frame orders-frame">
+                    <iframe src="dianshanghoutai/orders.html"></iframe>
+                </div>
+            </div>
+            
+            <!-- 商品管理 -->
+            <div class="card p-4 backend-page-container">
+                <h3 class="text-xl font-semibold mb-3">商品管理</h3>
+                <p class="text-gray-600 mb-4">商品列表、添加与编辑</p>
+                <div class="desktop-frame products-frame">
+                    <iframe src="dianshanghoutai/products.html"></iframe>
+                </div>
+            </div>
+            
+            <!-- 客户管理 -->
+            <div class="card p-4 backend-page-container">
+                <h3 class="text-xl font-semibold mb-3">客户管理</h3>
+                <p class="text-gray-600 mb-4">客户列表、详情与沟通记录</p>
+                <div class="desktop-frame">
+                    <iframe src="dianshanghoutai/customers.html"></iframe>
+                </div>
+            </div>
+            
+            <!-- 营销活动 -->
+            <div class="card p-4 backend-page-container">
+                <h3 class="text-xl font-semibold mb-3">营销活动</h3>
+                <p class="text-gray-600 mb-4">优惠券、促销活动设置</p>
+                <div class="desktop-frame marketing-frame">
+                    <iframe src="dianshanghoutai/marketing.html"></iframe>
+                </div>
+            </div>
+            
+            <!-- 数据分析 -->
+            <div class="card p-4 backend-page-container">
+                <h3 class="text-xl font-semibold mb-3">数据分析</h3>
+                <p class="text-gray-600 mb-4">销售报表、流量分析、转化率</p>
+                <div class="desktop-frame analytics-frame">
+                    <iframe src="dianshanghoutai/analytics.html"></iframe>
+                </div>
+            </div>
+            
+            <!-- 系统设置 -->
+            <div class="card p-4 backend-page-container">
+                <h3 class="text-xl font-semibold mb-3">系统设置</h3>
+                <p class="text-gray-600 mb-4">账户设置、权限与店铺配置</p>
+                <div class="desktop-frame settings-frame">
+                    <iframe src="dianshanghoutai/settings.html"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 新增：商家App部分 -->
+    <div class="section-header mb-8 mt-16">
+        <h2 class="text-2xl font-bold">电商商家管理App原型</h2>
+        <p class="text-white mt-2 text-sm">专为商家打造的移动管理工具，随时随地处理订单、回复客户和查看数据</p>
+    </div>
+    
+    <div class="card p-4 mb-6 bg-blue-50 border border-blue-100">
+        <p class="text-gray-700"><i class="fas fa-info-circle text-blue-500 mr-2"></i>本部分展示了为电商商家专门设计的移动端管理App，采用现代UI设计风格，帮助商家便捷地管理店铺、处理订单和与顾客沟通。所有界面均针对红色主题进行了优化，确保视觉体验一致。</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-16">
+        <!-- 首页/仪表盘 -->
+        <div class="app-page-container">
+            <h3 class="text-xl font-semibold text-center mb-3">首页/仪表盘</h3>
+            <div class="merchant-app-frame dashboard-merchant-frame">
+                <iframe src="appshangjia/dashboard.html" scrolling="no"></iframe>
+            </div>
+            <div class="mt-3 text-center">
+                <p class="text-gray-600 text-sm">展示销售数据、订单情况和商店运营状态的总览页面</p>
+                <div class="mt-2">
+                    <span class="inline-block bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full mr-1">核心功能</span>
+                    <span class="inline-block bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">已优化</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 订单管理 -->
+        <div class="app-page-container">
+            <h3 class="text-xl font-semibold text-center mb-3">订单管理</h3>
+            <div class="merchant-app-frame orders-merchant-frame">
+                <iframe src="appshangjia/orders.html" scrolling="no"></iframe>
+            </div>
+            <div class="mt-3 text-center">
+                <p class="text-gray-600 text-sm">显示所有订单，支持多种状态筛选和搜索功能</p>
+                <div class="mt-2">
+                    <span class="inline-block bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full mr-1">核心功能</span>
+                    <span class="inline-block bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">已优化</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 消息中心 -->
+        <div class="app-page-container">
+            <h3 class="text-xl font-semibold text-center mb-3">消息中心/聊天</h3>
+            <div class="merchant-app-frame messages-merchant-frame">
+                <iframe src="appshangjia/messages.html" scrolling="no"></iframe>
+            </div>
+            <div class="mt-3 text-center">
+                <p class="text-gray-600 text-sm">商家接收系统通知、客户咨询和重要提醒的集中地</p>
+                <div class="mt-2">
+                    <span class="inline-block bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full mr-1">核心功能</span>
+                    <span class="inline-block bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">已优化</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 个人中心 -->
+        <div class="app-page-container">
+            <h3 class="text-xl font-semibold text-center mb-3">个人中心/我的</h3>
+            <div class="merchant-app-frame profile-merchant-frame">
+                <iframe src="appshangjia/profile.html" scrolling="no"></iframe>
+            </div>
+            <div class="mt-3 text-center">
+                <p class="text-gray-600 text-sm">商家个人资料、账户设置和店铺管理功能入口</p>
+                <div class="mt-2">
+                    <span class="inline-block bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full mr-1">核心功能</span>
+                    <span class="inline-block bg-red-100 text-red-600 text-xs px-3 py-1 rounded-full">已优化</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 登录界面 -->
+        <div class="app-page-container">
+            <h3 class="text-xl font-semibold text-center mb-3">登录界面</h3>
+            <div class="merchant-app-frame login-merchant-frame">
+                <iframe src="appshangjia/login.html" scrolling="no"></iframe>
+            </div>
+            <div class="mt-3 text-center">
+                <p class="text-gray-600 text-sm">商家用户登录入口，支持账号密码、验证码及第三方登录方式</p>
+                <div class="mt-2">
+                    <span class="inline-block bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full">入口</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 订单详情 -->
+        <div class="app-page-container">
+            <h3 class="text-xl font-semibold text-center mb-3">订单详情</h3>
+            <div class="merchant-app-frame order-detail-merchant-frame">
+                <iframe src="appshangjia/order-detail.html" scrolling="no"></iframe>
+            </div>
+            <div class="mt-3 text-center">
+                <p class="text-gray-600 text-sm">单个订单的详细信息，包含商品、支付、物流等数据</p>
+                <div class="mt-2">
+                    <span class="inline-block bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">订单管理</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 发货处理 -->
+        <div class="app-page-container">
+            <h3 class="text-xl font-semibold text-center mb-3">订单发货</h3>
+            <div class="merchant-app-frame shipping-merchant-frame">
+                <iframe src="appshangjia/shipping.html" scrolling="no"></iframe>
+            </div>
+            <div class="mt-3 text-center">
+                <p class="text-gray-600 text-sm">填写物流信息，处理订单发货的操作界面</p>
+                <div class="mt-2">
+                    <span class="inline-block bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">订单管理</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 商品列表 -->
+        <div class="app-page-container">
+            <h3 class="text-xl font-semibold text-center mb-3">商品列表</h3>
+            <div class="merchant-app-frame products-merchant-frame">
+                <iframe src="appshangjia/products.html" scrolling="no"></iframe>
+            </div>
+            <div class="mt-3 text-center">
+                <p class="text-gray-600 text-sm">店铺全部商品管理，支持排序、筛选和搜索</p>
+                <div class="mt-2">
+                    <span class="inline-block bg-gray-100 text-gray-600 text-xs px-3 py-1 rounded-full">商品管理</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto text-center">
+            <p>电商系统原型综合展示 © 2023</p>
+            <p class="text-gray-400 mt-2">包含移动端App、商家管理App与PC端后台管理系统</p>
+        </div>
+    </footer>
 </body>
-</html> 
+</html>
